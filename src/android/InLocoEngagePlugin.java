@@ -1,11 +1,9 @@
 package com.inlocomedia.android.engagement;
 
+import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 
-import com.inlocomedia.android.engagement.InLocoEngagement;
-import com.inlocomedia.android.engagement.InLocoEngagementOptions;
 import com.inlocomedia.android.engagement.request.WebhookDeviceRegisterRequest;
 import com.inlocomedia.android.engagement.request.UnregisterDeviceRequest;
 import com.inlocomedia.android.engagement.request.FirebaseDeviceRegisterRequest;
@@ -29,7 +27,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
     private final Command initCommand = new Command("init") {
 
         @Override
-        public void execute(final Context context, final JSONObject json) {
+        public void execute(final Activity context, final JSONObject json) {
 
             String appId = json.optString("appId", null);
             sLogEnabled = json.optBoolean("logsEnabled", true);
@@ -51,7 +49,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
 
     private final Command registerDeviceFirebase = new Command("registerDeviceFirebase") {
         @Override
-        void execute(final Context context, final JSONObject json) {
+        void execute(final Activity context, final JSONObject json) {
 
             final RegisterDeviceRequest request = new FirebaseDeviceRegisterRequest.Builder()
                     .setUserId(json.optString("userId"))
@@ -64,7 +62,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
 
     private final Command registerDeviceWebhook = new Command("registerDeviceWebhook") {
         @Override
-        void execute(final Context context, final JSONObject json) {
+        void execute(final Activity context, final JSONObject json) {
             final RegisterDeviceRequest request = new WebhookDeviceRegisterRequest.Builder()
                     .setUserId(json.optString("userId"))
                     .build();
@@ -75,7 +73,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
 
     private final Command unregisterDevice = new Command("unregisterDevice") {
         @Override
-        void execute(final Context context, final JSONObject json) {
+        void execute(final Activity context, final JSONObject json) {
             final UnregisterDeviceRequest request = new UnregisterDeviceRequest.Builder()
                     .setUserId(json.optString("userId"))
                     .build();
@@ -84,10 +82,20 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
         }
     };
 
+    private final Command requestPermissions = new Command("requestPermissions") {
+        @Override
+        void execute(final Activity context, final JSONObject json) {
+            boolean askIfDenied = json.optBoolean("askIfDenied", false);
+
+            InLocoEngagement.requestPermissions(context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, askIfDenied, null);
+        }
+    };
+
     private final List<Command> commands = new ArrayList<Command>(Arrays.asList(initCommand,
                                                                                 registerDeviceFirebase,
                                                                                 registerDeviceWebhook,
-                                                                                unregisterDevice));
+                                                                                unregisterDevice,
+                                                                                requestPermissions));
 
     @Override
     public boolean execute(String action, JSONArray inputs, CallbackContext callbackContext) throws JSONException {
@@ -141,7 +149,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
             this.id = id;
         }
 
-        abstract void execute(final Context context, JSONObject json);
+        abstract void execute(final Activity context, JSONObject json);
 
         protected String getId() {
             return id;

@@ -11,14 +11,16 @@ inLocoEngageExport.OPTIONS = {
     APP_ID: 'appId',
     LOGS_ENABLED: 'logsEnabled',
     USER_ID: 'userId',
-    FIREBASE_TOKEN: 'firebaseToken'
+    FIREBASE_TOKEN: 'firebaseToken',
+    ASK_IF_DENIED: 'askIfDenied'
 };
 
 inLocoEngageExport.ACTIONS = {
   INITIALIZATION: 'init',
   REGISTER_DEVICE_FIREBASE: "registerDeviceFirebase",
   REGISTER_DEVICE_WEBHOOK: "registerDeviceWebhook",
-  UNREGISTER_DEVICE: "unregisterDevice"
+  UNREGISTER_DEVICE: "unregisterDevice",
+  REQUEST_PERMISSIONS: "requestPermissions"
 };
 
 inLocoEngageExport.initWithOptions = function(args, successCallback, failureCallback) {
@@ -35,6 +37,10 @@ inLocoEngageExport.registerDeviceWebhook = function(args, successCallback, failu
 
 inLocoEngageExport.unregisterDevice = function(args, successCallback, failureCallback) {
     cordova.exec(successCallback, failureCallback, 'InLocoEngage', inLocoEngageExport.ACTIONS.UNREGISTER_DEVICE, [args]);
+};
+
+inLocoEngageExport.requestPermissions = function(args, successCallback, failureCallback) {
+    cordova.exec(successCallback, failureCallback, 'InLocoEngage', inLocoEngageExport.ACTIONS.REQUEST_PERMISSIONS, [args]);
 };
 
 module.exports = inLocoEngageExport;
