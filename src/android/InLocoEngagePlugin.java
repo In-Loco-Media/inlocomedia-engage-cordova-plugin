@@ -2,6 +2,9 @@ package com.inlocomedia.android.engagement;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
+import android.content.res.Resources;
+import android.support.annotation.DrawableRes;
 import android.util.Log;
 
 import com.inlocomedia.android.engagement.request.WebhookDeviceRegisterRequest;
@@ -16,9 +19,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 public final class InLocoEngagePlugin extends CordovaPlugin {
     private static final String TAG = "InLocoEngagement";
@@ -91,11 +99,44 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
         }
     };
 
+    private final Command presentNotification = new Command("presentNotification") {
+        @Override
+        void execute(final Activity context, final JSONObject json) {
+            String dataAsString = json.optString("data", "");
+            HashMap<String, String> data = toHashMap(dataAsString);
+
+            String resourceName = json.optString("notificationIconName", "");
+            @DrawableRes int resourceId = getDrawableId(context, resourceName);
+
+            if (data.isEmpty()) {
+                if (sLogEnabled) {
+                    Log.w(TAG, "Failed to present notification. Invalid content: '" + dataAsString + "'");
+                }
+                return;
+            }
+
+            final PushMessage pushContent = InLocoEngagement.decodeReceivedMessage(context, data);
+
+            if (pushContent == null) {
+                if (sLogEnabled) {
+                    Log.w(TAG, "Failed to present notification. Invalid content: '" + data + "'");
+                }
+                return;
+            }
+
+            InLocoEngagement.presentNotification(context,
+                                                 pushContent,
+                                                 resourceId > 0 ? resourceId : 0,
+                                                 json.optInt("notificationId", getRandomNotificationId()));
+        }
+    };
+
     private final List<Command> commands = new ArrayList<Command>(Arrays.asList(initCommand,
                                                                                 registerDeviceFirebase,
                                                                                 registerDeviceWebhook,
                                                                                 unregisterDevice,
-                                                                                requestPermissions));
+                                                                                requestPermissions,
+                                                                                presentNotification));
 
     @Override
     public boolean execute(String action, JSONArray inputs, CallbackContext callbackContext) throws JSONException {
@@ -138,6 +179,35 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
         return true;
     }
 
+    private HashMap<String, String> toHashMap(final String jsonObjectAsString) {
+        HashMap<String, String> hashMap = new HashMap<String, String>();
+        try {
+            JSONObject jsonObject = new JSONObject(jsonObjectAsString);
+            for (Iterator<String> it = jsonObject.keys(); it.hasNext(); ) {
+                String key = it.next();
+                hashMap.put(key, jsonObject.getString(key));
+            }
+        } catch (JSONException e) {
+            if (sLogEnabled) {
+                Log.w(TAG, "Failed to parse notification data", e);
+            }
+        }
+        return hashMap;
+    }
+
+    private static int getRandomNotificationId() {
+        return Integer.parseInt(new SimpleDateFormat("ddHHmmss", Locale.US).format(new Date()));
+    }
+
+    private int getDrawableId(Context context, String icon) {
+        Resources resources = context.getResources();
+        int iconId = resources.getIdentifier(icon, "drawable", context.getPackageName());
+        if (iconId == 0) {
+            iconId = resources.getIdentifier(icon, "mipmap", context.getPackageName());
+        }
+        return iconId;
+    }
+
     public Activity getActivity() {
         return cordova != null ? cordova.getActivity() : null;
     }
@@ -156,4 +226,3 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
         }
     }
 }
-

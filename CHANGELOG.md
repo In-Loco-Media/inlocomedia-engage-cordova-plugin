@@ -1,3 +1,10 @@
+Release 1.2.0 (15/12/2017)
+===
+
+### Features
+- Interface to present the notification
+- Attribute for custom Google Play Services version
+
 Release 1.1.0 (17/10/2017)
 ===
 
