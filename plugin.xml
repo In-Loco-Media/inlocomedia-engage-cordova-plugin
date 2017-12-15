@@ -68,10 +68,12 @@
 
         <source-file src="src/android/InLocoEngagePlugin.java" target-dir="src/com/inlocomedia/android/engagement"/>
 
+        <preference name="GOOGLE_PLAY_SERVICES_VERSION" default="11.0.+"/>
+        
         <framework src="com.inlocomedia.android:android-sdk-engagement:3.3.+"/>
         <framework src="com.inlocomedia.android:android-sdk-location:3.3.+"/>
-        <framework src="com.google.android.gms:play-services-location:11.0.+"/>
-        <framework src="com.google.android.gms:play-services-ads:11.0.+"/>
+        <framework src="com.google.android.gms:play-services-location:$GOOGLE_PLAY_SERVICES_VERSION"/>
+        <framework src="com.google.android.gms:play-services-ads:$GOOGLE_PLAY_SERVICES_VERSION"/>
         <framework src="com.android.support:support-v4:25.3.+"/>
 
     </platform>

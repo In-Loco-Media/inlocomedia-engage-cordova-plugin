@@ -18,7 +18,7 @@ function registerDeviceFirebase() {
 
     InLocoEngage.registerDeviceFirebase({
         userId: "<Application_Id>",
-        firebaseToken: true
+        firebaseToken: "<firebaseToken>"
     });
 }
 
