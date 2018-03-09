@@ -1,3 +1,9 @@
+Release 1.3.0 (09/03/2018)
+===
+
+### Fixes
+- Add missing permission
+
 Release 1.2.0 (15/12/2017)
 ===
 
