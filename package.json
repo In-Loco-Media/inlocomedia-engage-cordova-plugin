@@ -1,6 +1,6 @@
 {
   "name": "inlocomedia-engage-cordova-plugin",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Plugin for InLocoEngage",
   "cordova": {
     "id": "inlocomedia-engage-cordova-plugin",
