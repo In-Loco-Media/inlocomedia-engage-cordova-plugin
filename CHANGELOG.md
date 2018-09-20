@@ -1,3 +1,14 @@
+Release 2.0.0 (20/09/2018)
+===
+
+### Features
+- Updates In Loco Engage SDK version to 4.1.+
+- Modifies the plugin interface, simplifying integration
+    - Device registration updates automatically
+    - Registatrion information can be added through new methods
+- Adds custom event tracking
+- Adds privacy consent functionality
+
 Release 1.4.0 (25/05/2018)
 ===
 
