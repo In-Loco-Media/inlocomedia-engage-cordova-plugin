@@ -1,3 +1,9 @@
+Release 2.1.0 (24/01/2019)
+===
+
+### Features
+- Updates In Loco Engage SDK version to 4.3.+
+
 Release 2.0.0 (20/09/2018)
 ===
 
