@@ -1,0 +1,36 @@
+{
+  "name": "inlocomedia-engage-cordova-plugin",
+  "version": "2.1.0",
+  "description": "Plugin for InLocoEngage",
+  "cordova": {
+    "id": "inlocomedia-engage-cordova-plugin",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/In-Loco-Media/inlocoengage-cordova-plugin.git"
+  },
+  "keywords": [
+    "inlocoengage",
+    "inlocomedia",
+    "engagement",
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ],
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.0"
+    }
+  ],
+  "author": "InLocoMedia",
+  "license": "Copyright",
+  "bugs": {
+    "url": "https://github.com/In-Loco-Media/inlocoengage-cordova-plugin/issues"
+  },
+  "homepage": "https://github.com/In-Loco-Media/inlocoengage-cordova-plugin#readme"
+}
