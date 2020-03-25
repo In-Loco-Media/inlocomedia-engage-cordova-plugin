@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <plugin id="inlocomedia-engage-cordova-plugin"
-        version="2.1.0"
+        version="3.0.0"
         xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -10,8 +10,6 @@
     <author>InLoco</author>
     <license>Copyright</license>
     <keywords>inlocomedia,engagement,inlocoengage</keywords>
-    <repo>https://github.com/inloco/inlocoengage-cordova-plugin</repo>
-    <issue>https://github.com/inloco/inlocoengage-cordova-plugin/issues</issue>
 
     <engines>
         <engine name="cordova" version=">=3.0"/>
