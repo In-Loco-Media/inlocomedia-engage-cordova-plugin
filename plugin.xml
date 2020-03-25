@@ -7,11 +7,11 @@
 
     <name>InLocoEngage Plugin</name>
     <description>Plugin for InLocoEngage</description>
-    <author>InLocoMedia</author>
+    <author>InLoco</author>
     <license>Copyright</license>
     <keywords>inlocomedia,engagement,inlocoengage</keywords>
-    <repo>https://github.com/In-Loco-Media/inlocoengage-cordova-plugin</repo>
-    <issue>https://github.com/In-Loco-Media/inlocoengage-cordova-plugin/issues</issue>
+    <repo>https://github.com/inloco/inlocoengage-cordova-plugin</repo>
+    <issue>https://github.com/inloco/inlocoengage-cordova-plugin/issues</issue>
 
     <engines>
         <engine name="cordova" version=">=3.0"/>
@@ -25,16 +25,7 @@
     <platform name="android">
         <config-file parent="/manifest/application" target="AndroidManifest.xml">
 
-            <!-- Engage SDK -->
-            <receiver
-                    android:name=".InLocoEngagementReceiver"
-                    android:exported="false"/>
-
             <!-- Location SDK -->
-            <service
-                    android:name=".InLocoMediaService"
-                    android:exported="false"/>
-
             <service android:exported="true" android:name="com.inlocomedia.android.engagement.InLocoInstanceIdService">
                 <intent-filter android:priority="500">
                     <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
@@ -56,11 +47,6 @@
             </receiver>
 
             <!-- Core SDK -->
-            <activity
-                    android:name=".InLocoMediaActivity"
-                    android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-                    android:theme="@style/Theme.InLocoMedia.NoActionBar.Fullscreen"/>
-
             <provider
                     android:name="com.inlocomedia.android.engagement.InLocoInitProvider"
                     android:authorities="${applicationId}.inlocoinitprovider"
@@ -76,10 +62,7 @@
             <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
             <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
             <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-            <!-- Improves location accuracy and battery consumption -->
             <uses-permission  android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"/>
-            
-            <!-- For apps targeting Android 10 (29) and higher only -->
             <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
             <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
         </config-file>
@@ -96,7 +79,7 @@
         <source-file src="src/android/InLocoInstanceIdService.java" target-dir="src/com/inlocomedia/android/engagement"/>
         <source-file src="src/android/InLocoMessagingService.java" target-dir="src/com/inlocomedia/android/engagement"/>
 
-        <preference name="SDK_VERSION" default="4.3.+"/>
+        <preference name="SDK_VERSION" default="5.0.+"/>
         <preference name="GOOGLE_PLAY_SERVICES_VERSION" default="15.0.+"/>
         <preference name="ANDROID_SUPPORT_VERSION" default="26.1.+"/>
 

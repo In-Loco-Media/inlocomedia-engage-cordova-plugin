@@ -2,7 +2,7 @@ package com.inlocomedia.android.engagement;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.inlocomedia.android.engagement.InLocoEngagement;
+import com.inlocomedia.android.engagement.InLocoPush;
 import com.inlocomedia.android.engagement.PushMessage;
 import com.adobe.phonegap.push.FCMService;
 
@@ -15,9 +15,9 @@ public class InLocoMessagingService extends FCMService {
         final Map<String, String> data = remoteMessage.getData();
 
         if (data != null) {
-            final PushMessage pushContent = InLocoEngagement.decodeReceivedMessage(this, data);
+            final PushMessage pushContent = InLocoPush.decodeReceivedMessage(this, data);
             if (pushContent != null) {
-                InLocoEngagement.presentNotification(
+                InLocoPush.presentNotification(
                         this,
                         pushContent,
                         this.getApplicationInfo().icon,

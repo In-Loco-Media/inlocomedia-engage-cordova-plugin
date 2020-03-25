@@ -25,157 +25,26 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import com.inlocomedia.android.engagement.request.PushProvider;
-import com.inlocomedia.android.engagement.user.EngageUser;
+import com.inlocomedia.android.common.InLoco;
+import com.inlocomedia.android.common.InLocoEvents;
 
 public final class InLocoEngagePlugin extends CordovaPlugin {
 
     private static final String TAG = "InLocoEngagement";
     private static boolean logsEnabled = true;
 
-    private final Command initCommand = new Command("init") {
-        @Override
-        public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
-            try {
-                // Retrieve options passed during initialization
-                String appId = json.optString("appId", null);
-                logsEnabled = json.optBoolean("logsEnabled", true);
-
-                // Create options object with the above values
-                final InLocoEngagementOptions options = InLocoEngagementOptions.getInstance(context);
-                options.setApplicationId(appId);
-                options.setLogEnabled(logsEnabled);
-
-                if (json.has("developmentDevices")) {
-                    options.setDevelopmentDevices(getDevelopmentDevices(json.getJSONArray("developmentDevices")));
-                }
-
-                if (json.has("locationTrackingEnabled")) {
-                    options.setLocationTrackingEnabled(json.getBoolean("locationTrackingEnabled"));
-                }
-
-                if (json.has("screenTrackingEnabled")) {
-                    options.setScreenTrackingEnabled(json.getBoolean("screenTrackingEnabled"));
-                }
-
-                if (json.has("requiresUserPrivacyConsent")) {
-                    options.setRequiresUserPrivacyConsent(json.getBoolean("requiresUserPrivacyConsent"));
-                }
-
-                // Initialize the SDK
-                InLocoEngagement.init(context, options);
-            } catch (Exception e) {
-                if (logsEnabled) {
-                    Log.e(TAG, "Failure during SDK initialization: '" + e.getMessage() + "'.");
-                }
-            }
-        }
-    };
-
-    private final Command requestPermissions = new Command("requestPermissions") {
-        @Override
-        public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
-            boolean askIfDenied = json.optBoolean("askIfDenied", false);
-
-            InLocoEngagement.requestPermissions(context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, askIfDenied, null);
-        }
-    };
-
-    private final Command isPushNotificationsEnabled = new Command("isPushNotificationsEnabled") {
-        @Override
-        public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
-            JSONObject data = new JSONObject();
-
-            try {
-                data.put("isEnabled", InLocoEngagement.isPushNotificationsEnabled(context));
-
-                callback.onSuccess(data);
-            } catch (JSONException e) {
-                callback.onFailure(e);
-            }
-        }
-    };
-
-    private final Command setPushNotificationsEnabled = new Command("setPushNotificationsEnabled") {
-        @Override
-        public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
-            try {
-                boolean enabled = json.optBoolean("enabled");
-
-                InLocoEngagement.setPushNotificationsEnabled(context, enabled);
-            } catch (Exception e) {
-                Log.e(TAG, "Faled to modify push notifications setting: '" + e.getMessage() + "'.");
-            }
-        }
-    };
-
-    private final Command setPushProvider = new Command("setPushProvider") {
-        @Override
-        public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
-            try {
-                String name = json.optString("name");
-                String token = json.optString("token");
-
-                PushProvider pushProvider = new PushProvider.Builder()
-                                                            .setName(name)
-                                                            .setToken(token)
-                                                            .build();
-
-                InLocoEngagement.setPushProvider(context, pushProvider);
-            } catch (Exception e) {
-                Log.e(TAG, "Faled to set push provider: '" + e.getMessage() + "'.");
-            }
-        }
-    };
-
     private final Command setUser = new Command("setUser") {
         @Override
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
             String userId = json.optString("userId");
-            EngageUser user = new EngageUser(userId);
-
-            InLocoEngagement.setUser(context, user);
+            InLoco.setUserId(context, userId);
         }
     };
 
     private final Command clearUser = new Command("clearUser") {
         @Override
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
-            InLocoEngagement.clearUser(context);
-        }
-    };
-
-    private final Command presentNotification = new Command("presentNotification") {
-        @Override
-        public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
-            String dataAsString = json.optString("data", "");
-            HashMap<String, String> data = toHashMap(dataAsString);
-
-            String resourceName = json.optString("notificationIconName", "");
-            @DrawableRes int resourceId = getDrawableId(context, resourceName);
-
-            if (data.isEmpty()) {
-                if (logsEnabled) {
-                    Log.w(TAG, "Failed to present notification. Invalid content: '" + dataAsString + "'");
-                }
-
-                return;
-            }
-
-            final PushMessage pushContent = InLocoEngagement.decodeReceivedMessage(context, data);
-
-            if (pushContent == null) {
-                if (logsEnabled) {
-                    Log.w(TAG, "Failed to present notification. Invalid content: '" + data + "'");
-                }
-                return;
-            }
-
-            InLocoEngagement.presentNotification(context,
-                                                 pushContent,
-                                                 resourceId > 0 ? resourceId : 0,
-                                                 json.optInt("notificationId", getRandomNotificationId()),
-                                                 json.optString("notificationChannelId", null));
+            InLoco.clearUserId(context);
         }
     };
 
@@ -185,22 +54,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
             String name = json.optString("name");
             HashMap<String, String> properties = toHashMap(json.optJSONObject("properties"));
 
-            InLocoEngagement.trackEvent(context, name, properties);
-        }
-    };
-
-    private final Command hasGivenPrivacyConsent = new Command("hasGivenPrivacyConsent") {
-        @Override
-        public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
-            JSONObject data = new JSONObject();
-
-            try {
-                data.put("hasGiven", InLocoEngagement.hasGivenPrivacyConsent(context));
-
-                callback.onSuccess(data);
-            } catch (JSONException e) {
-                callback.onFailure(e);
-            }
+            InLocoEvents.trackEvent(context, name, properties);
         }
     };
 
@@ -208,38 +62,14 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
         @Override
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
             boolean consent = json.optBoolean("consent");
-
-            InLocoEngagement.givePrivacyConsent(context, consent);
+            InLoco.givePrivacyConsent(context, consent);
         }
     };
 
-    private final Command isWaitingUserPrivacyConsent = new Command("isWaitingUserPrivacyConsent") {
-        @Override
-        public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
-            JSONObject data = new JSONObject();
-
-            try {
-                data.put("isWaiting", InLocoEngagement.isWaitingUserPrivacyConsent(context));
-
-                callback.onSuccess(data);
-            } catch (JSONException e) {
-                callback.onFailure(e);
-            }
-        }
-    };
-
-    private final List<Command> commands = new ArrayList<Command>(Arrays.asList(initCommand,
-                                                                                requestPermissions,
-                                                                                isPushNotificationsEnabled,
-                                                                                setPushNotificationsEnabled,
-                                                                                setPushProvider,
-                                                                                setUser,
+    private final List<Command> commands = new ArrayList<Command>(Arrays.asList(setUser,
                                                                                 clearUser,
-                                                                                presentNotification,
                                                                                 trackEvent,
-                                                                                hasGivenPrivacyConsent,
-                                                                                givePrivacyConsent,
-                                                                                isWaitingUserPrivacyConsent));
+                                                                                givePrivacyConsent));
 
     @Override
     public boolean execute(final String action, final JSONArray inputs, final CallbackContext callbackContext) throws JSONException {
