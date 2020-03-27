@@ -1,5 +1,6 @@
 var argscheck = require('cordova/argscheck');
 var exec = require('cordova/exec');
+var cordova = require("cordova");
 var inLocoEngageExport = {};
 
 inLocoEngageExport.OPTIONS = {
@@ -39,7 +40,7 @@ inLocoEngageExport.OPTIONS = {
 };
 
 inLocoEngageExport.ACTIONS = {
-  INITIALIZATION: 'init',
+  INITIALIZATION: 'initWithOptions',
   REQUEST_PERMISSIONS: 'requestPermissions',
   IS_PUSH_NOTIFICATIONS_ENABLED: 'isPushNotificationsEnabled',
   SET_PUSH_NOTIFICATIONS_ENABLED: 'setPushNotificationsEnabled',
@@ -52,6 +53,7 @@ inLocoEngageExport.ACTIONS = {
   IS_WAITING_USER_PRIVACY_CONSENT: 'isWaitingUserPrivacyConsent',
   PRESENT_NOTIFICATION: 'presentNotification'
 };
+
 
 inLocoEngageExport.initWithOptions = function(args, successCallback, failureCallback) {
   cordova.exec(successCallback, failureCallback, 'InLocoEngage', inLocoEngageExport.ACTIONS.INITIALIZATION, [args]);
@@ -101,4 +103,117 @@ inLocoEngageExport.presentNotification = function(args, successCallback, failure
   cordova.exec(successCallback, failureCallback, 'InLocoEngage', inLocoEngageExport.ACTIONS.PRESENT_NOTIFICATION, [args]);
 };
 
+
+inLocoEngageExport.hasPermission = function(success, error) {
+  if (cordova.platformId !== 'ios') {
+    success(true);
+    return;
+  }
+  cordova.exec(success, error, 'InLocoEngage', 'hasPermission', []);
+};
+
+inLocoEngageExport.subscribeToTopic = function(topic, success, error) {
+  cordova.exec(success, error, 'InLocoEngage', 'subscribeToTopic', [topic]);
+};
+
+inLocoEngageExport.unsubscribeFromTopic = function(topic, success, error) {
+  cordova.exec(success, error, 'InLocoEngage', 'unsubscribeFromTopic', [topic]);
+};
+
+inLocoEngageExport.onNotification = function(callback, success, error) {
+  InLocoEngage.onNotificationReceived = callback;
+  //inLocoEngageExport.onNotificationReceived = callback; ???
+  exec(success, error, 'InLocoEngage', 'registerNotification', []);
+};
+
+inLocoEngageExport.onTokenRefresh = function(callback) {
+  InLocoEngage.onTokenRefreshReceived = callback;
+};
+
+inLocoEngageExport.getToken = function(success, error) {
+  exec(success, error, 'InLocoEngage', 'getToken', []);
+};
+
+inLocoEngageExport.onNotificationReceived = function(payload) {
+  console.log("ILMCordovaPlugin: JS: Received push notification");
+  console.log(payload);
+};
+
+// DEFAULT TOKEN REFRESH CALLBACK //
+inLocoEngageExport.onTokenRefreshReceived = function(token) {
+  console.log("ILMCordovaPlugin: JS: Received token refresh");
+  console.log(token);
+};
+
+// function InLocoEngage() {
+//   console.log("InLocoEngage.js: is created");
+// }
+
+// // CHECK FOR PERMISSION
+// InLocoEngage.prototype.hasPermission = function(success, error) {
+//   if (cordova.platformId !== "ios") {
+//     success(true);
+//     return;
+//   }
+//   exec(success, error, "InLocoEngage", "hasPermission", []);
+// };
+
+// // SUBSCRIBE TO TOPIC //
+// InLocoEngage.prototype.subscribeToTopic = function(topic, success, error) {
+//   exec(success, error, "InLocoEngage", "subscribeToTopic", [topic]);
+// };
+
+// // UNSUBSCRIBE FROM TOPIC //
+// InLocoEngage.prototype.unsubscribeFromTopic = function(topic, success, error) {
+//   exec(success, error, "InLocoEngage", "unsubscribeFromTopic", [topic]);
+// };
+
+// NOTIFICATION CALLBACK //
+
+
+// // TOKEN REFRESH CALLBACK //
+// InLocoEngage.prototype.onTokenRefresh = function(callback) {
+//   InLocoEngage.prototype.onTokenRefreshReceived = callback;
+// };
+
+// GET TOKEN //
+// InLocoEngage.prototype.getToken = function(success, error) {
+//   exec(success, error, "InLocoEngage", "getToken", []);
+// };
+
+// // GET APNS TOKEN //
+// InLocoEngage.prototype.getAPNSToken = function(success, error) {
+//   if (cordova.platformId !== "ios") {
+//     success(null);
+//     return;
+//   }
+//   exec(success, error, "InLocoEngage", "getAPNSToken", []);
+// };
+
+// // CLEAR ALL NOTIFICATIONS //
+// InLocoEngage.prototype.clearAllNotifications = function(success, error) {
+//   exec(success, error, "InLocoEngage", "clearAllNotifications", []);
+// };
+
+// // DEFAULT NOTIFICATION CALLBACK //
+
+
+
+
+// FIRE READY //
+cordova.exec(
+  function(result) {
+    console.log("ILMCordovaPlugin Ready OK");
+  },
+  function(result) {
+    console.log("FCMPILMCordovaPluginlugin Ready ERROR");
+  },
+  "InLocoEngage",
+  "ready",
+  []
+);
+
+//var fcmPlugin = new InLocoEngage();
+
+//module.exports = fcmPlugin;
 module.exports = inLocoEngageExport;
