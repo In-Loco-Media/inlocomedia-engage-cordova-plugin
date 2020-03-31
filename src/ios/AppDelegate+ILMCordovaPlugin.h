@@ -1,9 +1,8 @@
 #import "AppDelegate.h"
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <Cordova/CDVViewController.h>
 
-@interface AppDelegate (ALMCordovaPlugin)
-
-+ (NSData*)getLastPush;
+@interface AppDelegate (ILMCordovaPlugin)
 
 @end
