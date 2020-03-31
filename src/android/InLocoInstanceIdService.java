@@ -1,10 +1,6 @@
 package com.inlocomedia.android.engagement;
 
-import android.util.Log;
-
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceIdService;
-import com.inlocomedia.android.engagement.InLocoPush;
 import com.inlocomedia.android.engagement.request.FirebasePushProvider;
 import com.inlocomedia.android.engagement.request.PushProvider;
 import com.adobe.phonegap.push.PushInstanceIDListenerService;

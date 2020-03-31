@@ -1,11 +1,11 @@
 package com.inlocomedia.android.engagement;
 
-import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.inlocomedia.android.engagement.InLocoPush;
-import com.inlocomedia.android.engagement.PushMessage;
 import com.adobe.phonegap.push.FCMService;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 public class InLocoMessagingService extends FCMService {
@@ -21,11 +21,15 @@ public class InLocoMessagingService extends FCMService {
                         this,
                         pushContent,
                         this.getApplicationInfo().icon,
-                        1111111
+                        getRandomNotificationId()
                 );
             } else {
                 super.onMessageReceived(remoteMessage);
             }
         }
+    }
+
+    private static int getRandomNotificationId() {
+        return Integer.parseInt(new SimpleDateFormat("ddHHmmss", Locale.US).format(new Date()));
     }
 }
