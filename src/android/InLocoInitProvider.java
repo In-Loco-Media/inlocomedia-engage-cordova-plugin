@@ -8,23 +8,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.inlocomedia.android.common.InLoco;
+
 public class InLocoInitProvider extends ContentProvider {
   
     @Override
     public boolean onCreate() {
-      Log.d("InLocoInitProvider", "onCreate()");
-        // Set initialization options
-        InLocoEngagementOptions options = InLocoEngagementOptions.getInstance(getContext());
-
-        // The App ID you obtained in the dashboard
-        options.setApplicationId("88b25236-e53c-44ce-992d-32b15842593d");
-
-        // Verbose mode; enables SDK logging, defaults to true.
-        // Remember to set to false in production builds.
-        options.setLogEnabled(true);
+        Log.d("InLocoInitProvider", "onCreate()");
 
         //Initialize the SDK
-        InLocoEngagement.init(getContext(), options);
+        InLoco.init(getContext());
 
         return false;
     }

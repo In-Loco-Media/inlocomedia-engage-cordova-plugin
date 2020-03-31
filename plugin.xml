@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        id="inlocomedia-engage-cordova-plugin"
-        version="2.1.0">
+
+<plugin id="inlocomedia-engage-cordova-plugin"
+        version="3.0.0"
+        xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android">
 
     <name>InLocoEngage Plugin</name>
     <description>Plugin for InLocoEngage</description>
-    <author>InLocoMedia</author>
+    <author>InLoco</author>
     <license>Copyright</license>
     <keywords>inlocomedia,engagement,inlocoengage</keywords>
-    <repo>https://github.com/In-Loco-Media/inlocoengage-cordova-plugin</repo>
-    <issue>https://github.com/In-Loco-Media/inlocoengage-cordova-plugin/issues</issue>
 
     <engines>
         <engine name="cordova" version="&gt;=3.0" />
@@ -24,17 +23,8 @@
     <!-- android -->
     <platform name="android">
         <config-file parent="/manifest/application" target="AndroidManifest.xml">
-            
-            <!-- Engage SDK -->
-            <receiver
-                android:exported="false"
-                android:name=".InLocoEngagementReceiver" />
 
-            <!-- Location SDK -->    
-            <service
-                android:exported="false"
-                android:name=".InLocoMediaService" />
-
+            <!-- Location SDK -->
             <service android:exported="true" android:name="com.inlocomedia.android.engagement.InLocoInstanceIdService">
                 <intent-filter android:priority="500">
                     <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
@@ -54,11 +44,6 @@
             </receiver>
 
             <!-- Core SDK -->
-            <activity
-                android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-                android:name=".InLocoMediaActivity"
-                android:theme="@style/Theme.InLocoMedia.NoActionBar.Fullscreen" />
-            
             <provider
                 android:authorities="${applicationId}.inlocoinitprovider"
                 android:exported="false"
@@ -68,18 +53,15 @@
         </config-file>
 
         <config-file parent="/*" target="AndroidManifest.xml">
-            <uses-permission android:name="android.permission.INTERNET" />
-            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-            <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-            <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-            <!-- Improves location accuracy and battery consumption -->
-            <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
-
-            <!-- For apps targeting Android 10 (29) and higher only -->
-            <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
-            <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+            <uses-permission android:name="android.permission.INTERNET"/>
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+            <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+            <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+            <uses-permission  android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"/>
+            <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
+            <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
         </config-file>
 
         <config-file parent="/*" target="res/xml/config.xml">
@@ -94,9 +76,9 @@
         <source-file src="src/android/InLocoInstanceIdService.java" target-dir="src/com/inlocomedia/android/engagement" />
         <source-file src="src/android/InLocoMessagingService.java" target-dir="src/com/inlocomedia/android/engagement" />
 
-        <preference default="4.3.+" name="SDK_VERSION" />
-        <preference default="15.0.+" name="GOOGLE_PLAY_SERVICES_VERSION" />
-        <preference default="26.1.+" name="ANDROID_SUPPORT_VERSION" />
+        <preference name="SDK_VERSION" default="5.0.+"/>
+        <preference name="GOOGLE_PLAY_SERVICES_VERSION" default="15.0.+"/>
+        <preference name="ANDROID_SUPPORT_VERSION" default="26.1.+"/>
         
         <framework src="com.inlocomedia.android:android-sdk-engagement:$SDK_VERSION" />
         <framework src="com.inlocomedia.android:android-sdk-location:$SDK_VERSION" />
@@ -122,8 +104,8 @@
 			<string>production</string>
 		</config-file>
 
-        <resource-file src="src/ios/Assets/GoogleService-Info.plist" target="Resources/GoogleService-Info.plist" />
 
+        <resource-file src="src/ios/Assets/GoogleService-Info.plist" target="Resources/GoogleService-Info.plist" />
         <resource-file src="src/ios/Assets/InLocoOptions.plist" target="Resources/InLocoOptions.plist" />
 
 		<header-file src="src/ios/AppDelegate+ILMCordovaPlugin.h" />
