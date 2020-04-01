@@ -5,9 +5,13 @@
 
 @interface ILMCordovaPlugin : CDVPlugin
 
-- (void)initWithOptions:(CDVInvokedUrlCommand *)command;
-// - (void)hasGivenPrivacyConsent:(CDVInvokedUrlCommand *)command;
-// - (void)givePrivacyConsent:(CDVInvokedUrlCommand *)command;
-// - (void)isWaitingUserPrivacyConsent:(CDVInvokedUrlCommand *)command;
+- (void)setUser:(CDVInvokedUrlCommand *)command;
+- (void)clearUser:(CDVInvokedUrlCommand *)command;
+- (void)trackEvent:(CDVInvokedUrlCommand *)command;
+- (void)registerCheckIn:(CDVInvokedUrlCommand *)command;
+- (void)setAddress:(CDVInvokedUrlCommand *)command;
+- (void)clearAddress:(CDVInvokedUrlCommand *)command;
+- (void)givePrivacyConsent:(CDVInvokedUrlCommand *)command;
+- (void)checkPrivacyConsentMissing:(CDVInvokedUrlCommand *)command;
 
 @end

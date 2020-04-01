@@ -66,10 +66,7 @@ NSString *const kGCMMessageIDKey = @"gcm.message_id";
     
     NSLog(@"ILMCordovaPlugin: INITSDK");
     [ILMInLoco initSdk];
-
-    [ILMInLoco setUserId:@"cordovaTestJulia0"];
     
-
     NSDictionary *remoteNotificationPayload = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     if ([ILMPushMessage isInLocoMessage:remoteNotificationPayload]) {
         NSLog(@"ILMCordovaPlugin: in loco notif payload");
