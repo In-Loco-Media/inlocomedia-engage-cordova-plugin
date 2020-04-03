@@ -53,8 +53,10 @@
 {
     NSDictionary *params = [[command arguments] objectAtIndex:0];
     
-    NSString *localeId = [NSString stringWithFormat:@"%@_%@", params[@"language"], params[@"country"]];
-    NSLocale *locale = [NSLocale localeWithLocaleIdentifier:localeId];
+    NSDictionary *localeDict = [NSDictionary dictionaryWithObjectsAndKeys:
+    params[@"language"], NSLocaleLanguageCode, params[@"country"], NSLocaleCountryCode, nil];
+
+    NSLocale *locale = [NSLocale localeWithLocaleIdentifier:[NSLocale localeIdentifierFromComponents: localeDict]];
     
     ILMUserAddress *userAddress = [[ILMUserAddress alloc] init];
 

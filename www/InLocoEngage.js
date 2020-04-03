@@ -42,7 +42,8 @@ inLocoEngageExport.OPTIONS = {
   EVENTS: "analytics",
   INSTALLED_APPS: "installed_apps",
   LOCATION: "location",
-  CONTEXT_PROVIDER: "context_provider"
+  CONTEXT_PROVIDER: "context_provider",
+  COVID_19: "covid_19_aid"
 };
 
 inLocoEngageExport.ACTIONS = {

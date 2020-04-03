@@ -105,9 +105,6 @@
 		</config-file>
 
 
-        <resource-file src="src/ios/Assets/GoogleService-Info.plist" target="Resources/GoogleService-Info.plist" />
-        <resource-file src="src/ios/Assets/InLocoOptions.plist" target="Resources/InLocoOptions.plist" />
-
 		<header-file src="src/ios/AppDelegate+ILMCordovaPlugin.h" />
 		<source-file src="src/ios/AppDelegate+ILMCordovaPlugin.m" />
 
@@ -125,6 +122,4 @@
         <framework src="UserNotifications.framework" />
 
     </platform>
-    <hook src="scripts/config_files.js" type="after_plugin_add" />
-	<hook src="scripts/config_files.js" type="after_prepare" />
 </plugin>

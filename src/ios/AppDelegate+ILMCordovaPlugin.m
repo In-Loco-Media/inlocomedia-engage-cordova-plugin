@@ -43,33 +43,24 @@ NSString *const kGCMMessageIDKey = @"gcm.message_id";
     Method originalNotification =  class_getInstanceMethod(self, @selector(userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:));
     Method customNotification =    class_getInstanceMethod(self, @selector(userNotificationCenter:customDidReceiveNotificationResponse:withCompletionHandler:));
     method_exchangeImplementations(originalNotification, customNotification);
-
-    NSLog(@"ILMCordovaPlugin: loaded swizzles");
 }
 
 - (BOOL)application:(UIApplication *)application customDidFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     [self application:application customDidFinishLaunchingWithOptions:launchOptions];
-    
-    NSLog(@"ILMCordovaPlugin: DidFinishLaunchingWithOptions");
 
-    if([FIRApp defaultApp] == nil) {
-        NSLog(@"ILMCordovaPlugin: FIRApp configure");
+    if ([FIRApp defaultApp] == nil) {
         [FIRApp configure];
     }    
 
     [FIRMessaging messaging].delegate = self;
     
     [self registerForNotifications:application];
-
-    NSLog(@"ILMCordovaPlugin: will init SDK");
     
-    NSLog(@"ILMCordovaPlugin: INITSDK");
     [ILMInLoco initSdk];
     
     NSDictionary *remoteNotificationPayload = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     if ([ILMPushMessage isInLocoMessage:remoteNotificationPayload]) {
-        NSLog(@"ILMCordovaPlugin: in loco notif payload");
         ILMPushMessage *message = [[ILMPushMessage alloc] initWithDictionary:remoteNotificationPayload];
         [ILMInLocoPush appDidFinishLaunchingWithMessage:message];
         [self handleNotificationClick:message];
@@ -88,7 +79,6 @@ customDidReceiveNotificationResponse:(UNNotificationResponse *)response
 {
     [self userNotificationCenter:center customDidReceiveNotificationResponse:response withCompletionHandler:completionHandler];
 
-    NSLog(@"ILMCordovaPlugin: did receive notification");
     NSDictionary *userInfo = response.notification.request.content.userInfo;
     
     if ([ILMPushMessage isInLocoMessage:userInfo]) {
@@ -97,7 +87,6 @@ customDidReceiveNotificationResponse:(UNNotificationResponse *)response
             completionHandler();
         }];
       
-      NSLog(@"ILMCordovaPlugin: the notification comes from in loco");
       //Handle custom events for iOS 10 and 11 (i.e., opening a specific part of the App)
       //Custom actions can be accessed through the message.actions property
       [self handleNotificationClick:message];
@@ -110,7 +99,6 @@ customDidReceiveNotificationResponse:(UNNotificationResponse *)response
 
 - (void)registerForNotifications:(UIApplication *)application
 {
-    NSLog(@"ILMCordovaPlugin: register notifications");
     if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_9_x_Max) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -141,17 +129,15 @@ customDidReceiveNotificationResponse:(UNNotificationResponse *)response
 - (void)messaging:(FIRMessaging *)messaging didReceiveRegistrationToken:(NSString *)deviceToken 
 {    
     if (deviceToken) {
-        ILMFirebaseProvider *firebaseProvider = [[ILMFirebaseProvider alloc] initWithToken:deviceToken];
-        [ILMInLocoPush setPushProvider:firebaseProvider];
-        NSLog(@"ILMCordovaPlugin: finished setting push provider with received token");
-    } else {
-        NSLog(@"ILMCordovaPlugin: setPushProvider - empty token");
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            ILMFirebaseProvider *firebaseProvider = [[ILMFirebaseProvider alloc] initWithToken:deviceToken];
+            [ILMInLocoPush setPushProvider:firebaseProvider];
+        });
     }
 }
 
 - (void)handleNotificationClick:(ILMPushMessage *)message
 {
-    NSLog(@"ILMCordovaPlugin: handle notification click");
     NSString *urlString = message.actions.firstObject;
     NSURL *url = [NSURL URLWithString:urlString];
     UIApplication *application = [UIApplication sharedApplication];
