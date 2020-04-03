@@ -82,6 +82,10 @@ inLocoEngageExport.clearAddress = function(successCallback, failureCallback) {
 }
 
 inLocoEngageExport.givePrivacyConsent = function(args, successCallback, failureCallback) {
+  if (args.hasOwnProperty('consent') && args.consent != null && !(typeof args.consent === 'boolean')) {
+    args.consent = stringToBoolean(args.consent.toString());
+  }
+
   cordova.exec(successCallback, failureCallback, 'InLocoEngage', inLocoEngageExport.ACTIONS.GIVE_PRIVACY_CONSENT, [args]);
 };
 
@@ -90,3 +94,11 @@ inLocoEngageExport.checkPrivacyConsentMissing = function(successCallback, failur
 };
 
 module.exports = inLocoEngageExport;
+
+function stringToBoolean (string) {
+  switch(string.toLowerCase().trim()) {
+      case "true": case "yes": case "1": return true;
+      case "false": case "no": case "0": case null: return false;
+      default: return Boolean(string);
+  }
+}

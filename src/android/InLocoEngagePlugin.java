@@ -78,7 +78,6 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
                     .build();
 
             InLocoVisits.registerCheckIn(context, checkIn);
-            Log.i(TAG, "CHECK IN REGISTRED");
         }
     };
 
@@ -92,9 +91,9 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
             } else {
                 JSONArray arrayJson = json.optJSONArray("consent_types");
                 Set<String> consentTypes =  new HashSet<>();
-                for(int i = 0; i < arrayJson.length(); i++)
+                for(int i = 0; i < arrayJson.length(); i++) {
                     consentTypes.add(arrayJson.optString(i));
-
+                }
                 InLoco.givePrivacyConsent(context, consentTypes);
             }
         }
@@ -141,8 +140,6 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
             address.setLongitude(json.optDouble("longitude"));
 
             InLocoAddressValidation.setAddress(context, address);
-
-            Log.i(TAG, "ADDRESS REGISTRED");
         }
     };
 
