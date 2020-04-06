@@ -12,16 +12,11 @@
 @import UserNotifications;
 #endif
 
-
-// Implement UNUserNotificationCenterDelegate to receive display notification via APNS for devices
-// running iOS 10 and above. Implement FIRMessagingDelegate to receive data message via FCM for
-// devices running iOS 10 and above.
 #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
 @interface AppDelegate () <UNUserNotificationCenterDelegate, FIRMessagingDelegate>
 @end
 #endif
 
-// Copied from Apple's header in case it is missing in some cases (e.g. pre-Xcode 8 builds).
 #ifndef NSFoundationVersionNumber_iOS_9_x_Max
 #define NSFoundationVersionNumber_iOS_9_x_Max 1299
 #endif
@@ -33,7 +28,6 @@ static NSString *fcmToken;
 static NSString *apnsToken;
 NSString *const kGCMMessageIDKey = @"gcm.message_id";
 
-//Method swizzling
 + (void)load
 {
     Method original =  class_getInstanceMethod(self, @selector(application:didFinishLaunchingWithOptions:));
@@ -86,16 +80,12 @@ customDidReceiveNotificationResponse:(UNNotificationResponse *)response
         [ILMInLocoPush didReceiveNotificationResponse:message completionBlock:^{
             completionHandler();
         }];
-      
-      //Handle custom events for iOS 10 and 11 (i.e., opening a specific part of the App)
-      //Custom actions can be accessed through the message.actions property
+
       [self handleNotificationClick:message];
     } else {
-        // The remote message is from another service. Handle it here.
         completionHandler();
     }
 }
-
 
 - (void)registerForNotifications:(UIApplication *)application
 {
