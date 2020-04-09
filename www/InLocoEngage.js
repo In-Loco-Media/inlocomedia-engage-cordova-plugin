@@ -34,6 +34,13 @@ inLocoEngageExport.OPTIONS = {
   CONSENT: 'consent',
   CONSENT_TYPES: 'consent_types',
 
+  // consent dialog options
+  CONSENT_DIALOG_TITLE: 'consent_dialog_title',
+  CONSENT_DIALOG_MESSAGE: 'consent_dialog_message',
+  CONSENT_DIALOG_ACCEPT_TEXT: 'consent_dialog_accept_text',
+  CONSENT_DIALOG_DENY_TEXT: 'consent_dialog_deny_text',
+  //CONSENT_TYPES: 'consent_types',
+
   // consentTypes options
   ADDRESS_VALIDATION: "address_validation",
   ADVERTISEMENT: "advertisement",
@@ -51,8 +58,13 @@ inLocoEngageExport.ACTIONS = {
   REGISTER_CHECK_IN: 'registerCheckIn',
   SET_ADDRESS: 'setAddress',
   CLEAR_ADDRESS: 'clearAddress',
+  REQUEST_PRIVACY_CONSENT: 'requestPrivacyConsent',
   GIVE_PRIVACY_CONSENT: 'givePrivacyConsent',
-  CHECK_PRIVACY_CONSENT_MISSING: 'checkPrivacyConsentMissing'
+  ALLOW_CONSENT_TYPES: 'allowConsentTypes',
+  SET_ALLOWED_CONSENT_TYPES: 'setAllowedConsentTypes',
+  CHECK_CONSENT: 'checkConsent',
+  CHECK_PRIVACY_CONSENT_MISSING: 'checkPrivacyConsentMissing',
+  DENY_CONSENT_TYPES: 'denyConsentTypes'
 };
 
 inLocoEngageExport.setUser = function(args, successCallback, failureCallback) {
@@ -79,6 +91,10 @@ inLocoEngageExport.clearAddress = function(successCallback, failureCallback) {
   cordova.exec(successCallback, failureCallback, 'InLocoEngage', inLocoEngageExport.ACTIONS.CLEAR_ADDRESS, []);
 }
 
+inLocoEngageExport.requestPrivacyConsent = function(args, successCallback, failureCallback) {
+  cordova.exec(successCallback, failureCallback, 'InLocoEngage', inLocoEngageExport.ACTIONS.REQUEST_PRIVACY_CONSENT, [args]);
+};
+
 inLocoEngageExport.givePrivacyConsent = function(args, successCallback, failureCallback) {
   if (args.hasOwnProperty('consent') && args.consent != null && !(typeof args.consent === 'boolean')) {
     args.consent = stringToBoolean(args.consent.toString());
@@ -87,8 +103,24 @@ inLocoEngageExport.givePrivacyConsent = function(args, successCallback, failureC
   cordova.exec(successCallback, failureCallback, 'InLocoEngage', inLocoEngageExport.ACTIONS.GIVE_PRIVACY_CONSENT, [args]);
 };
 
+inLocoEngageExport.allowConsentTypes = function(args, successCallback, failureCallback) {
+  cordova.exec(successCallback, failureCallback, 'InLocoEngage', inLocoEngageExport.ACTIONS.ALLOW_CONSENT_TYPES, [args]);
+};
+
+inLocoEngageExport.setAllowedConsentTypes = function(args, successCallback, failureCallback) {
+  cordova.exec(successCallback, failureCallback, 'InLocoEngage', inLocoEngageExport.ACTIONS.SET_ALLOWED_CONSENT_TYPES, [args]);
+};
+
+inLocoEngageExport.checkConsent = function(args, successCallback, failureCallback) {
+  cordova.exec(successCallback, failureCallback, 'InLocoEngage', inLocoEngageExport.ACTIONS.CHECK_CONSENT, [args]);
+};
+
 inLocoEngageExport.checkPrivacyConsentMissing = function(successCallback, failureCallback) {
   cordova.exec(successCallback, failureCallback, 'InLocoEngage', inLocoEngageExport.ACTIONS.CHECK_PRIVACY_CONSENT_MISSING, []);
+};
+
+inLocoEngageExport.denyConsentTypes = function(args, successCallback, failureCallback) {
+  cordova.exec(successCallback, failureCallback, 'InLocoEngage', inLocoEngageExport.ACTIONS.DENY_CONSENT_TYPES, [args]);
 };
 
 module.exports = inLocoEngageExport;
