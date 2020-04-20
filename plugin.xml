@@ -111,7 +111,7 @@
         <header-file src="src/ios/ILMCordovaPlugin.h"/>
         <source-file src="src/ios/ILMCordovaPlugin.m"/>
 
-        <framework src="InLocoEngage-iOS-SDK" type="podspec" spec="~> 5.0" />
+        <framework src="InLocoEngage-iOS-SDK" type="podspec" spec="~> 5.1" />
 
         <framework src="AdSupport.framework" />
         <framework src="CoreLocation.framework" />
