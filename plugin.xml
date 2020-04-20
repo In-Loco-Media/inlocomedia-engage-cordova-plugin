@@ -76,7 +76,7 @@
         <source-file src="src/android/InLocoInstanceIdService.java" target-dir="src/com/inlocomedia/android/engagement" />
         <source-file src="src/android/InLocoMessagingService.java" target-dir="src/com/inlocomedia/android/engagement" />
 
-        <preference name="SDK_VERSION" default="5.0.+"/>
+        <preference name="SDK_VERSION" default="5.1.+"/>
         <preference name="GOOGLE_PLAY_SERVICES_VERSION" default="15.0.+"/>
         <preference name="ANDROID_SUPPORT_VERSION" default="26.1.+"/>
         
