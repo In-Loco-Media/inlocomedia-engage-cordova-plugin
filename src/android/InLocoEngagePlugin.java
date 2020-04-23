@@ -103,15 +103,19 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
             InLoco.requestPrivacyConsent(consentDialogOptions, new ConsentListener() {
                 @Override
                 public void onConsentResult(final ConsentResult consentResult) {
-                    boolean isWaitingConsent = consentResult.isWaitingConsent();
-                    boolean areAllConsentTypesGiven = consentResult.areAllConsentTypesGiven();
-                    try {
-                        JSONObject data = new JSONObject();
-                        data.put("is_waiting_consent", isWaitingConsent);
-                        data.put("are_all_consent_types_given", areAllConsentTypesGiven);
-                        callback.onSuccess(data);
-                    } catch (JSONException e) {
-                        callback.onFailure(e);
+                    if (consentResult.hasFinished()) {
+                        boolean isWaitingConsent = consentResult.isWaitingConsent();
+                        boolean areAllConsentTypesGiven = consentResult.areAllConsentTypesGiven();
+                        try {
+                            JSONObject data = new JSONObject();
+                            data.put("is_waiting_consent", isWaitingConsent);
+                            data.put("are_all_consent_types_given", areAllConsentTypesGiven);
+                            callback.onSuccess(data);
+                        } catch (JSONException e) {
+                            callback.onFailure(e);
+                        }
+                    } else {
+                        callback.onFailure(new Exception("Error while requesting privacy consent. Privacy consent not set."));
                     }
                 }
             });
@@ -155,15 +159,19 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
             InLoco.checkConsent(context, new ConsentListener() {
                 @Override
                 public void onConsentResult(final ConsentResult consentResult) {
-                    boolean isWaitingConsent = consentResult.isWaitingConsent();
-                    boolean areAllConsentTypesGiven = consentResult.areAllConsentTypesGiven();
-                    try {
-                        JSONObject data = new JSONObject();
-                        data.put("is_waiting_consent", isWaitingConsent);
-                        data.put("are_all_consent_types_given", areAllConsentTypesGiven);
-                        callback.onSuccess(data);
-                    } catch (JSONException e) {
-                        callback.onFailure(e);
+                    if (consentResult.hasFinished()) {
+                        boolean isWaitingConsent = consentResult.isWaitingConsent();
+                        boolean areAllConsentTypesGiven = consentResult.areAllConsentTypesGiven();
+                        try {
+                            JSONObject data = new JSONObject();
+                            data.put("is_waiting_consent", isWaitingConsent);
+                            data.put("are_all_consent_types_given", areAllConsentTypesGiven);
+                            callback.onSuccess(data);
+                        } catch (JSONException e) {
+                            callback.onFailure(e);
+                        }
+                    } else {
+                        callback.onFailure(new Exception("Error while checking consent."));
                     }
                 }
             }, consentTypes);

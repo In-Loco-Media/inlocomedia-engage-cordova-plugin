@@ -98,7 +98,8 @@
         [ILMInLoco giveUserPrivacyConsent:consent.boolValue];
         pluginResult = [CDVPluginResult resultWithStatus: CDVCommandStatus_OK];
     } else if (consentTypes != nil) {
-        [ILMInLoco giveUserPrivacyConsentForTypes:consentTypes];
+        NSSet *consentTypesSet = [NSSet setWithArray:consentTypes];
+        [ILMInLoco giveUserPrivacyConsentForTypes:consentTypesSet];
         pluginResult = [CDVPluginResult resultWithStatus: CDVCommandStatus_OK];
     } else {
         pluginResult = [CDVPluginResult resultWithStatus: CDVCommandStatus_ERROR messageAsString:@"Missing or incorrect argument passed to method."];
@@ -119,6 +120,108 @@
                                                         
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
+}
+
+- (void)checkConsent:(CDVInvokedUrlCommand *)command
+{
+    NSDictionary *params = [[command arguments] objectAtIndex:0];
+    NSArray *consentTypesArray = params[@"consent_types"];
+    NSSet *consentTypes = [NSSet setWithArray:consentTypesArray];
+
+    [ILMInLoco checkConsentForTypes:consentTypes withBlock:^(ILMConsentResult *result) {
+        CDVPluginResult *pluginResult = nil;
+        if (result && [result hasFinished]) {
+            BOOL isWaitingConsent = [result isWaitingConsent];
+            BOOL areAllConsentTypesGiven = [result areAllConsentTypesGiven];
+
+            NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@(isWaitingConsent), @"is_waiting_consent",
+                                                                            @(areAllConsentTypesGiven), @"are_all_consent_types_given", nil];
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK 
+                                         messageAsDictionary:data];
+        
+        } else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
+                                             messageAsString:@"Error while checking consent."];
+        }
+
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+- (void)requestPrivacyConsent:(CDVInvokedUrlCommand *)command
+{
+    NSDictionary *params = [[command arguments] objectAtIndex:0];
+    NSString *title = params[@"consent_dialog_title"];
+    NSString *message = params[@"consent_dialog_message"];
+    NSString *acceptText = params[@"consent_dialog_accept_text"];
+    NSString *denyText = params[@"consent_dialog_deny_text"];
+    NSArray *consentTypesArray = params[@"consent_types"];
+    NSSet *consentTypes = consentTypesArray ? [NSSet setWithArray:consentTypesArray] : nil;
+
+    ILMConsentDialogOptionsBuilder *builder = [[ILMConsentDialogOptionsBuilder alloc] init];
+    [builder setTitle:title];
+    [builder setMessage:message];
+    [builder setAcceptText:acceptText];
+    [builder setDenyText:denyText];
+    [builder setConsentTypes:consentTypes];
+
+
+    ILMError *err;
+
+    [ILMInLoco requestPrivacyConsentWithOptions:[builder build:&err] andConsentBlock:^(ILMConsentResult *result) {
+        CDVPluginResult *pluginResult = nil;
+        if (result && [result hasFinished]) {
+            BOOL isWaitingConsent = [result isWaitingConsent];
+            BOOL areAllConsentTypesGiven = [result areAllConsentTypesGiven];
+
+            NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@(isWaitingConsent), @"is_waiting_consent",
+                                                                            @(areAllConsentTypesGiven), @"are_all_consent_types_given", nil];
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK 
+                                         messageAsDictionary:data];
+        } else {
+            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
+                                             messageAsString:@"Error while requesting privacy consent. Privacy consent not set."];
+            
+        }
+
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }];
+}
+
+- (void)setAllowedConsentTypes:(CDVInvokedUrlCommand *)command
+{
+    NSDictionary *params = [[command arguments] objectAtIndex:0];
+    NSArray *consentTypesArray = params[@"consent_types"];
+    NSSet *consentTypes = [NSSet setWithArray:consentTypesArray];
+
+    [ILMInLoco setAllowedConsentTypes:consentTypes];
+
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus: CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void)allowConsentTypes:(CDVInvokedUrlCommand *)command
+{
+    NSDictionary *params = [[command arguments] objectAtIndex:0];
+    NSArray *consentTypesArray = params[@"consent_types"];
+    NSSet *consentTypes = [NSSet setWithArray:consentTypesArray];
+
+    [ILMInLoco allowConsentTypes:consentTypes];
+
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus: CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void)denyConsentTypes:(CDVInvokedUrlCommand *)command
+{
+    NSDictionary *params = [[command arguments] objectAtIndex:0];
+    NSArray *consentTypesArray = params[@"consent_types"];
+    NSSet *consentTypes = [NSSet setWithArray:consentTypesArray];
+
+    [ILMInLoco denyConsentTypes:consentTypes];
+
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus: CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 @end
