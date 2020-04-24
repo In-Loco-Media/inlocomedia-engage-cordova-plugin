@@ -44,7 +44,23 @@
 
 - (void)registerCheckIn:(CDVInvokedUrlCommand *)command
 {
-    NSLog(@"Check in is not available for iOS");
+    NSDictionary *params = [[command arguments] objectAtIndex:0];
+    NSString *placeName = params[@"placeName"];
+    NSString *placeId = params[@"placeId"];
+    NSDictionary *givenExtras = params[@"extras"];
+    NSMutableDictionary *extras = [[NSMutableDictionary alloc] init];
+
+    for (NSString* key in givenExtras) {
+        [extras setObject:[NSString stringWithFormat:@"%@", [givenExtras valueForKey:key]] forKey:key];
+    }
+
+    ILMCheckIn *checkIn = [[ILMCheckIn alloc] init];
+    checkIn.placeId = placeId;
+    checkIn.placeName = placeName;
+    checkIn.extras = extras;
+
+    [ILMInLocoVisits registerCheckIn:checkIn];
+
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus: CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
