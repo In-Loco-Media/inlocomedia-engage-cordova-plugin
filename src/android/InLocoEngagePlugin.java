@@ -42,7 +42,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
     private final Command setUser = new Command("setUser") {
         @Override
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
-            String userId = json.optString("user_id");
+            String userId = json.optString("userId");
 
             InLoco.setUserId(context, userId);
         }
@@ -70,8 +70,8 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
     private final Command registerCheckIn = new Command("registerCheckIn") {
         @Override
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
-            String placeName = json.optString("place_name");
-            String placeId = json.optString("place_id");
+            String placeName = json.optString("placeName");
+            String placeId = json.optString("placeId");
             HashMap<String, String> extras = toHashMap(json.optJSONObject("extras"));
             CheckIn checkIn = new CheckIn.Builder()
                     .placeName(placeName)
@@ -87,11 +87,11 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
     private final Command requestPrivacyConsent = new Command("requestPrivacyConsent") {
         @Override
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
-            String title = json.optString("consent_dialog_title", "Sample Title");
-            String message = json.optString("consent_dialog_message", "Sample Message");
-            String acceptText = json.optString("consent_dialog_accept_text", "Sample Accept");
-            String denyText = json.optString("consent_dialog_deny_text", "Sample Deny");
-            Set<String> consentTypes = toHashSet(json.optJSONArray("consent_types"));
+            String title = json.optString("consentDialogTitle", "Sample Title");
+            String message = json.optString("consentDialogMessage", "Sample Message");
+            String acceptText = json.optString("consentDialogAcceptText", "Sample Accept");
+            String denyText = json.optString("consentDialogDenyText", "Sample Deny");
+            Set<String> consentTypes = toHashSet(json.optJSONArray("consentTypes"));
             ConsentDialogOptions consentDialogOptions = new ConsentDialogOptions.Builder(context)
                     .title(title)
                     .message(message)
@@ -108,8 +108,8 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
                         boolean areAllConsentTypesGiven = consentResult.areAllConsentTypesGiven();
                         try {
                             JSONObject data = new JSONObject();
-                            data.put("is_waiting_consent", isWaitingConsent);
-                            data.put("are_all_consent_types_given", areAllConsentTypesGiven);
+                            data.put("isWaitingConsent", isWaitingConsent);
+                            data.put("areAllConsentTypesGiven", areAllConsentTypesGiven);
                             callback.onSuccess(data);
                         } catch (JSONException e) {
                             callback.onFailure(e);
@@ -130,7 +130,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
                 boolean consent = json.optBoolean("consent");
                 InLoco.givePrivacyConsent(context, consent);
             } else {
-                Set<String> consentTypes = toHashSet(json.optJSONArray("consent_types"));
+                Set<String> consentTypes = toHashSet(json.optJSONArray("consentTypes"));
                 InLoco.givePrivacyConsent(context, consentTypes);
             }
         }
@@ -139,7 +139,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
     private final Command allowConsentTypes = new Command("allowConsentTypes") {
         @Override
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
-            Set<String> consentTypes = toHashSet(json.optJSONArray("consent_types"));
+            Set<String> consentTypes = toHashSet(json.optJSONArray("consentTypes"));
             InLoco.allowConsentTypes(context, consentTypes);
         }
     };
@@ -147,7 +147,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
     private final Command setAllowedConsentTypes = new Command("setAllowedConsentTypes") {
         @Override
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
-            Set<String> consentTypes = toHashSet(json.optJSONArray("consent_types"));
+            Set<String> consentTypes = toHashSet(json.optJSONArray("consentTypes"));
             InLoco.setAllowedConsentTypes(context, consentTypes);
         }
     };
@@ -155,7 +155,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
     private final Command checkConsent = new Command("checkConsent") {
         @Override
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
-            Set<String> consentTypes = toHashSet(json.optJSONArray("consent_types"));
+            Set<String> consentTypes = toHashSet(json.optJSONArray("consentTypes"));
             InLoco.checkConsent(context, new ConsentListener() {
                 @Override
                 public void onConsentResult(final ConsentResult consentResult) {
@@ -164,8 +164,8 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
                         boolean areAllConsentTypesGiven = consentResult.areAllConsentTypesGiven();
                         try {
                             JSONObject data = new JSONObject();
-                            data.put("is_waiting_consent", isWaitingConsent);
-                            data.put("are_all_consent_types_given", areAllConsentTypesGiven);
+                            data.put("isWaitingConsent", isWaitingConsent);
+                            data.put("areAllConsentTypesGiven", areAllConsentTypesGiven);
                             callback.onSuccess(data);
                         } catch (JSONException e) {
                             callback.onFailure(e);
@@ -188,7 +188,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
                     boolean isConsentMissing = result.getResult();
                     try {
                         JSONObject data = new JSONObject();
-                        data.put("is_consent_missing", isConsentMissing);
+                        data.put("isConsentMissing", isConsentMissing);
                         callback.onSuccess(data);
                     } catch (JSONException e) {
                         callback.onFailure(e);
@@ -201,7 +201,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
     private final Command denyConsentTypes = new Command("denyConsentTypes") {
         @Override
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
-            Set<String> consentTypes = toHashSet(json.optJSONArray("consent_types"));
+            Set<String> consentTypes = toHashSet(json.optJSONArray("consentTypes"));
             InLoco.denyConsentTypes(context, consentTypes);
         }
     };
@@ -215,15 +215,15 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
             Locale locale = new Locale(language, country);
 
             Address address = new Address(locale);
-            address.setCountryName(json.optString("country_name"));
-            address.setCountryCode(json.optString("country_code"));
-            address.setAdminArea(json.optString("admin_area"));
-            address.setSubAdminArea(json.optString("sub_admin_area"));
+            address.setCountryName(json.optString("countryName"));
+            address.setCountryCode(json.optString("countryCode"));
+            address.setAdminArea(json.optString("adminArea"));
+            address.setSubAdminArea(json.optString("subAdminArea"));
             address.setLocality(json.optString("locality"));
-            address.setSubLocality(json.optString("sub_locality"));
+            address.setSubLocality(json.optString("subLocality"));
             address.setThoroughfare(json.optString("thoroughfare"));
-            address.setSubThoroughfare(json.optString("sub_thoroughfare"));
-            address.setPostalCode(json.optString("postal_code"));
+            address.setSubThoroughfare(json.optString("subThoroughfare"));
+            address.setPostalCode(json.optString("postalCode"));
             address.setLatitude(json.optDouble("latitude"));
             address.setLongitude(json.optDouble("longitude"));
 

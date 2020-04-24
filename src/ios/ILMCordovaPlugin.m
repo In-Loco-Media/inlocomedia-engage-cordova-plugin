@@ -8,7 +8,7 @@
 - (void)setUser:(CDVInvokedUrlCommand *)command
 {
     NSDictionary *params = [[command arguments] objectAtIndex:0];
-    NSString *userId = params[@"user_id"];
+    NSString *userId = params[@"userId"];
 
     if (userId != nil) {
         [ILMInLoco setUserId:userId];
@@ -61,15 +61,15 @@
     ILMUserAddress *userAddress = [[ILMUserAddress alloc] init];
 
     [userAddress setLocale:locale];
-    [userAddress setCountryName:params[@"country_name"]];
-    [userAddress setCountryCode:params[@"country_code"]];
-    [userAddress setAdminArea:params[@"admin_area"]];
-    [userAddress setSubAdminArea:params[@"sub_admin_area"]];
+    [userAddress setCountryName:params[@"countryName"]];
+    [userAddress setCountryCode:params[@"countryCode"]];
+    [userAddress setAdminArea:params[@"adminArea"]];
+    [userAddress setSubAdminArea:params[@"subAdminArea"]];
     [userAddress setLocality:params[@"locality"]];
-    [userAddress setSubLocality:params[@"sub_locality"]];
+    [userAddress setSubLocality:params[@"subLocality"]];
     [userAddress setThoroughfare:params[@"thoroughfare"]];
-    [userAddress setSubThoroughfare:params[@"sub_thoroughfare"]];
-    [userAddress setPostalCode:params[@"postal_code"]];
+    [userAddress setSubThoroughfare:params[@"subThoroughfare"]];
+    [userAddress setPostalCode:params[@"postalCode"]];
 
     [userAddress setLatitude:params[@"latitude"]];
     [userAddress setLongitude:params[@"longitude"]];
@@ -91,7 +91,7 @@
 {
     NSDictionary *params = [[command arguments] objectAtIndex:0];
     NSNumber *consent = params[@"consent"];
-    NSArray *consentTypes = params[@"consent_types"];
+    NSArray *consentTypes = params[@"consentTypes"];
     CDVPluginResult *pluginResult = nil;
 
     if (consent != nil) {
@@ -113,7 +113,7 @@
     [ILMInLoco checkPrivacyConsentMissing:^(BOOL consentMissing) {
         NSLog(@"Consent missing: %@", @(consentMissing));
 
-        NSDictionary *data = [NSDictionary dictionaryWithObject:@(consentMissing) forKey:@"is_consent_missing"];
+        NSDictionary *data = [NSDictionary dictionaryWithObject:@(consentMissing) forKey:@"isConsentMissing"];
 
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK 
                                                       messageAsDictionary:data];
@@ -125,7 +125,7 @@
 - (void)checkConsent:(CDVInvokedUrlCommand *)command
 {
     NSDictionary *params = [[command arguments] objectAtIndex:0];
-    NSArray *consentTypesArray = params[@"consent_types"];
+    NSArray *consentTypesArray = params[@"consentTypes"];
     NSSet *consentTypes = [NSSet setWithArray:consentTypesArray];
 
     [ILMInLoco checkConsentForTypes:consentTypes withBlock:^(ILMConsentResult *result) {
@@ -134,8 +134,8 @@
             BOOL isWaitingConsent = [result isWaitingConsent];
             BOOL areAllConsentTypesGiven = [result areAllConsentTypesGiven];
 
-            NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@(isWaitingConsent), @"is_waiting_consent",
-                                                                            @(areAllConsentTypesGiven), @"are_all_consent_types_given", nil];
+            NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@(isWaitingConsent), @"isWaitingConsent",
+                                                                            @(areAllConsentTypesGiven), @"areAllConsentTypesGiven", nil];
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK 
                                          messageAsDictionary:data];
         
@@ -151,11 +151,11 @@
 - (void)requestPrivacyConsent:(CDVInvokedUrlCommand *)command
 {
     NSDictionary *params = [[command arguments] objectAtIndex:0];
-    NSString *title = params[@"consent_dialog_title"];
-    NSString *message = params[@"consent_dialog_message"];
-    NSString *acceptText = params[@"consent_dialog_accept_text"];
-    NSString *denyText = params[@"consent_dialog_deny_text"];
-    NSArray *consentTypesArray = params[@"consent_types"];
+    NSString *title = params[@"consentDialogTitle"];
+    NSString *message = params[@"consentDialogMessage"];
+    NSString *acceptText = params[@"consentDialogAcceptText"];
+    NSString *denyText = params[@"consentDialogDenyText"];
+    NSArray *consentTypesArray = params[@"consentTypes"];
     NSSet *consentTypes = consentTypesArray ? [NSSet setWithArray:consentTypesArray] : nil;
 
     ILMConsentDialogOptionsBuilder *builder = [[ILMConsentDialogOptionsBuilder alloc] init];
@@ -174,8 +174,8 @@
             BOOL isWaitingConsent = [result isWaitingConsent];
             BOOL areAllConsentTypesGiven = [result areAllConsentTypesGiven];
 
-            NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@(isWaitingConsent), @"is_waiting_consent",
-                                                                            @(areAllConsentTypesGiven), @"are_all_consent_types_given", nil];
+            NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@(isWaitingConsent), @"isWaitingConsent",
+                                                                            @(areAllConsentTypesGiven), @"areAllConsentTypesGiven", nil];
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK 
                                          messageAsDictionary:data];
         } else {
@@ -191,7 +191,7 @@
 - (void)setAllowedConsentTypes:(CDVInvokedUrlCommand *)command
 {
     NSDictionary *params = [[command arguments] objectAtIndex:0];
-    NSArray *consentTypesArray = params[@"consent_types"];
+    NSArray *consentTypesArray = params[@"consentTypes"];
     NSSet *consentTypes = [NSSet setWithArray:consentTypesArray];
 
     [ILMInLoco setAllowedConsentTypes:consentTypes];
@@ -203,7 +203,7 @@
 - (void)allowConsentTypes:(CDVInvokedUrlCommand *)command
 {
     NSDictionary *params = [[command arguments] objectAtIndex:0];
-    NSArray *consentTypesArray = params[@"consent_types"];
+    NSArray *consentTypesArray = params[@"consentTypes"];
     NSSet *consentTypes = [NSSet setWithArray:consentTypesArray];
 
     [ILMInLoco allowConsentTypes:consentTypes];
@@ -215,7 +215,7 @@
 - (void)denyConsentTypes:(CDVInvokedUrlCommand *)command
 {
     NSDictionary *params = [[command arguments] objectAtIndex:0];
-    NSArray *consentTypesArray = params[@"consent_types"];
+    NSArray *consentTypesArray = params[@"consentTypes"];
     NSSet *consentTypes = [NSSet setWithArray:consentTypesArray];
 
     [ILMInLoco denyConsentTypes:consentTypes];
