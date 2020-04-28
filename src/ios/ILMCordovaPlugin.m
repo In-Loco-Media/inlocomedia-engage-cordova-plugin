@@ -48,16 +48,41 @@
     NSString *placeName = params[@"placeName"];
     NSString *placeId = params[@"placeId"];
     NSDictionary *givenExtras = params[@"extras"];
+    NSDictionary *address = params[@"address"];
+
     NSMutableDictionary *extras = [[NSMutableDictionary alloc] init];
 
     for (NSString* key in givenExtras) {
         [extras setObject:[NSString stringWithFormat:@"%@", [givenExtras valueForKey:key]] forKey:key];
     }
 
+    NSDictionary *localeDict = [NSDictionary dictionaryWithObjectsAndKeys:
+    address[@"language"], NSLocaleLanguageCode, address[@"country"], NSLocaleCountryCode, nil];
+
+    NSLocale *locale = [NSLocale localeWithLocaleIdentifier:[NSLocale localeIdentifierFromComponents: localeDict]];
+    
+    ILMUserAddress *userAddress = [[ILMUserAddress alloc] init];
+
+    [userAddress setLocale:locale];
+    [userAddress setCountryName:address[@"countryName"]];
+    [userAddress setCountryCode:address[@"countryCode"]];
+    [userAddress setAdminArea:address[@"adminArea"]];
+    [userAddress setSubAdminArea:address[@"subAdminArea"]];
+    [userAddress setLocality:address[@"locality"]];
+    [userAddress setSubLocality:address[@"subLocality"]];
+    [userAddress setThoroughfare:address[@"thoroughfare"]];
+    [userAddress setSubThoroughfare:address[@"subThoroughfare"]];
+    [userAddress setPostalCode:address[@"postalCode"]];
+
+    [userAddress setLatitude:address[@"latitude"]];
+    [userAddress setLongitude:address[@"longitude"]];
+
+
     ILMCheckIn *checkIn = [[ILMCheckIn alloc] init];
     checkIn.placeId = placeId;
     checkIn.placeName = placeName;
     checkIn.extras = extras;
+    checkIn.userAddress = userAddress;
 
     [ILMInLocoVisits registerCheckIn:checkIn];
 
