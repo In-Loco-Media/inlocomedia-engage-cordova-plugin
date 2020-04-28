@@ -12,11 +12,11 @@
     <keywords>inlocomedia,engagement,inlocoengage</keywords>
 
     <engines>
-        <engine name="cordova" version=">=3.0"/>
+        <engine name="cordova" version="&gt;=3.0" />
     </engines>
 
     <js-module name="InLocoEngage" src="www/InLocoEngage.js">
-        <clobbers target="window.InLocoEngage"/>
+        <clobbers target="window.InLocoEngage" />
     </js-module>
 
     <!-- android -->
@@ -26,30 +26,28 @@
             <!-- Location SDK -->
             <service android:exported="true" android:name="com.inlocomedia.android.engagement.InLocoInstanceIdService">
                 <intent-filter android:priority="500">
-                    <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                    <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
                 </intent-filter>
             </service>
 
             <service android:exported="true" android:name="com.inlocomedia.android.engagement.InLocoMessagingService">
                 <intent-filter android:priority="500">
-                    <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                    <action android:name="com.google.firebase.MESSAGING_EVENT" />
                 </intent-filter>
             </service>
 
-            <receiver
-                    android:name="com.inlocomedia.android.location.LocationReceiver"
-                    android:exported="false">
+            <receiver android:exported="false" android:name="com.inlocomedia.android.location.LocationReceiver">
                 <intent-filter>
-                    <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                    <action android:name="android.intent.action.BOOT_COMPLETED" />
                 </intent-filter>
             </receiver>
 
             <!-- Core SDK -->
             <provider
-                    android:name="com.inlocomedia.android.engagement.InLocoInitProvider"
-                    android:authorities="${applicationId}.inlocoinitprovider"
-                    android:exported="false"
-                    android:initOrder="100" />
+                android:authorities="${applicationId}.inlocoinitprovider"
+                android:exported="false"
+                android:initOrder="100"
+                android:name="com.inlocomedia.android.engagement.InLocoInitProvider" />
 
         </config-file>
 
@@ -67,26 +65,60 @@
 
         <config-file parent="/*" target="res/xml/config.xml">
             <feature name="InLocoEngage">
-                <param name="android-package" value="com.inlocomedia.android.engagement.InLocoEngagePlugin"/>
-                <param name="onload" value="true"/>
+                <param name="android-package" value="com.inlocomedia.android.engagement.InLocoEngagePlugin" />
+                <param name="onload" value="true" />
             </feature>
         </config-file>
 
-        <source-file src="src/android/InLocoEngagePlugin.java" target-dir="src/com/inlocomedia/android/engagement"/>
-        <source-file src="src/android/InLocoInitProvider.java" target-dir="src/com/inlocomedia/android/engagement"/>
-        <source-file src="src/android/InLocoInstanceIdService.java" target-dir="src/com/inlocomedia/android/engagement"/>
-        <source-file src="src/android/InLocoMessagingService.java" target-dir="src/com/inlocomedia/android/engagement"/>
+        <source-file src="src/android/InLocoEngagePlugin.java" target-dir="src/com/inlocomedia/android/engagement" />
+        <source-file src="src/android/InLocoInitProvider.java" target-dir="src/com/inlocomedia/android/engagement" />
+        <source-file src="src/android/InLocoInstanceIdService.java" target-dir="src/com/inlocomedia/android/engagement" />
+        <source-file src="src/android/InLocoMessagingService.java" target-dir="src/com/inlocomedia/android/engagement" />
 
         <preference name="SDK_VERSION" default="5.1.+"/>
         <preference name="GOOGLE_PLAY_SERVICES_VERSION" default="15.0.+"/>
         <preference name="ANDROID_SUPPORT_VERSION" default="26.1.+"/>
-
-        <framework src="com.inlocomedia.android:android-sdk-engagement:$SDK_VERSION"/>
-        <framework src="com.inlocomedia.android:android-sdk-location:$SDK_VERSION"/>
-        <framework src="com.google.android.gms:play-services-location:$GOOGLE_PLAY_SERVICES_VERSION"/>
-        <framework src="com.google.android.gms:play-services-ads-identifier:$GOOGLE_PLAY_SERVICES_VERSION"/>
-        <framework src="com.android.support:support-v4:$ANDROID_SUPPORT_VERSION"/>
-
+        
+        <framework src="com.inlocomedia.android:android-sdk-engagement:$SDK_VERSION" />
+        <framework src="com.inlocomedia.android:android-sdk-location:$SDK_VERSION" />
+        <framework src="com.google.android.gms:play-services-location:$GOOGLE_PLAY_SERVICES_VERSION" />
+        <framework src="com.google.android.gms:play-services-ads-identifier:$GOOGLE_PLAY_SERVICES_VERSION" />
+        <framework src="com.android.support:support-v4:$ANDROID_SUPPORT_VERSION" />
+    
     </platform>
 
+    <platform name="ios">
+        <config-file parent="/*" target="config.xml">
+            <feature name="InLocoEngage">
+                <param name="ios-package" value="ILMCordovaPlugin" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <!-- ENABLE PUSH CAPABILITY -->
+		<config-file parent="aps-environment" target="*/Entitlements-Debug.plist">
+			<string>development</string>
+		</config-file>
+		<config-file parent="aps-environment" target="*/Entitlements-Release.plist">
+			<string>production</string>
+		</config-file>
+
+
+		<header-file src="src/ios/AppDelegate+ILMCordovaPlugin.h" />
+		<source-file src="src/ios/AppDelegate+ILMCordovaPlugin.m" />
+
+        <header-file src="src/ios/ILMCordovaPlugin.h"/>
+        <source-file src="src/ios/ILMCordovaPlugin.m"/>
+
+        <framework src="InLocoEngage-iOS-SDK" type="podspec" spec="~> 5.1" />
+
+        <framework src="AdSupport.framework" />
+        <framework src="CoreLocation.framework" />
+        <framework src="Foundation.framework" />
+        <framework src="SystemConfiguration.framework" />
+        <framework src="UIKit.framework" />
+        <framework src="CoreTelephony.framework" />
+        <framework src="UserNotifications.framework" />
+
+    </platform>
 </plugin>
