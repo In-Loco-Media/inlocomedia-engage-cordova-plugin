@@ -44,7 +44,29 @@
 
 - (void)registerCheckIn:(CDVInvokedUrlCommand *)command
 {
-    NSLog(@"Check in is not available for iOS");
+    NSDictionary *params = [[command arguments] objectAtIndex:0];
+    NSString *placeName = params[@"placeName"];
+    NSString *placeId = params[@"placeId"];
+    NSDictionary *givenExtras = params[@"extras"];
+    NSDictionary *address = params[@"address"];
+
+    NSMutableDictionary *extras = [[NSMutableDictionary alloc] init];
+
+    for (NSString* key in givenExtras) {
+        [extras setObject:[NSString stringWithFormat:@"%@", [givenExtras valueForKey:key]] forKey:key];
+    }
+
+    ILMUserAddress *userAddress = [self addressFromDictionary:address];
+
+
+    ILMCheckIn *checkIn = [[ILMCheckIn alloc] init];
+    checkIn.placeId = placeId;
+    checkIn.placeName = placeName;
+    checkIn.extras = extras;
+    checkIn.userAddress = userAddress;
+
+    [ILMInLocoVisits registerCheckIn:checkIn];
+
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus: CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
@@ -53,31 +75,38 @@
 {
     NSDictionary *params = [[command arguments] objectAtIndex:0];
     
-    NSDictionary *localeDict = [NSDictionary dictionaryWithObjectsAndKeys:
-    params[@"language"], NSLocaleLanguageCode, params[@"country"], NSLocaleCountryCode, nil];
-
-    NSLocale *locale = [NSLocale localeWithLocaleIdentifier:[NSLocale localeIdentifierFromComponents: localeDict]];
-    
-    ILMUserAddress *userAddress = [[ILMUserAddress alloc] init];
-
-    [userAddress setLocale:locale];
-    [userAddress setCountryName:params[@"countryName"]];
-    [userAddress setCountryCode:params[@"countryCode"]];
-    [userAddress setAdminArea:params[@"adminArea"]];
-    [userAddress setSubAdminArea:params[@"subAdminArea"]];
-    [userAddress setLocality:params[@"locality"]];
-    [userAddress setSubLocality:params[@"subLocality"]];
-    [userAddress setThoroughfare:params[@"thoroughfare"]];
-    [userAddress setSubThoroughfare:params[@"subThoroughfare"]];
-    [userAddress setPostalCode:params[@"postalCode"]];
-
-    [userAddress setLatitude:params[@"latitude"]];
-    [userAddress setLongitude:params[@"longitude"]];
+    ILMUserAddress *userAddress = [self addressFromDictionary:params];
 
     [ILMInLocoAddressValidation setUserAddress:userAddress];
 
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus: CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (ILMUserAddress *)addressFromDictionary:(NSDictionary *)address
+{
+    NSDictionary *localeDict = [NSDictionary dictionaryWithObjectsAndKeys:
+    address[@"language"], NSLocaleLanguageCode, address[@"country"], NSLocaleCountryCode, nil];
+
+    NSLocale *locale = [NSLocale localeWithLocaleIdentifier:[NSLocale localeIdentifierFromComponents:localeDict]];
+    
+    ILMUserAddress *userAddress = [[ILMUserAddress alloc] init];
+
+    [userAddress setLocale:locale];
+    [userAddress setCountryName:address[@"countryName"]];
+    [userAddress setCountryCode:address[@"countryCode"]];
+    [userAddress setAdminArea:address[@"adminArea"]];
+    [userAddress setSubAdminArea:address[@"subAdminArea"]];
+    [userAddress setLocality:address[@"locality"]];
+    [userAddress setSubLocality:address[@"subLocality"]];
+    [userAddress setThoroughfare:address[@"thoroughfare"]];
+    [userAddress setSubThoroughfare:address[@"subThoroughfare"]];
+    [userAddress setPostalCode:address[@"postalCode"]];
+
+    [userAddress setLatitude:address[@"latitude"]];
+    [userAddress setLongitude:address[@"longitude"]];
+
+    return userAddress;
 }
 
 - (void)clearAddress:(CDVInvokedUrlCommand *)command
