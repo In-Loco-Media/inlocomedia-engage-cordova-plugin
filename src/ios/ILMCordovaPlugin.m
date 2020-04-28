@@ -194,7 +194,6 @@
     [builder setDenyText:denyText];
     [builder setConsentTypes:consentTypes];
 
-
     ILMError *err;
 
     [ILMInLoco requestPrivacyConsentWithOptions:[builder build:&err] andConsentBlock:^(ILMConsentResult *result) {
@@ -210,7 +209,6 @@
         } else {
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
                                              messageAsString:@"Error while requesting privacy consent. Privacy consent not set."];
-            
         }
 
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
