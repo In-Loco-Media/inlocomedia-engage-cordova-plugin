@@ -24,8 +24,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.inlocomedia.android.common.ConsentDialogOptions;
+import com.inlocomedia.android.common.ConsentResult;
 import com.inlocomedia.android.common.InLoco;
 import com.inlocomedia.android.common.InLocoEvents;
+import com.inlocomedia.android.common.listener.ConsentListener;
 import com.inlocomedia.android.common.listener.InLocoListener;
 import com.inlocomedia.android.common.listener.Result;
 import com.inlocomedia.android.location.CheckIn;
@@ -34,7 +37,6 @@ import com.inlocomedia.android.location.InLocoVisits;
 public final class InLocoEngagePlugin extends CordovaPlugin {
 
     private static final String TAG = "InLocoEngage";
-    private static boolean logsEnabled = true;
 
     // Custom Audience
     private final Command setUser = new Command("setUser") {
@@ -82,6 +84,41 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
     };
 
     // Privacy Consent
+    private final Command requestPrivacyConsent = new Command("requestPrivacyConsent") {
+        @Override
+        public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
+            String title = json.optString("consent_dialog_title", "Sample Title");
+            String message = json.optString("consent_dialog_message", "Sample Message");
+            String acceptText = json.optString("consent_dialog_accept_text", "Sample Accept");
+            String denyText = json.optString("consent_dialog_deny_text", "Sample Deny");
+            Set<String> consentTypes = toHashSet(json.optJSONArray("consent_types"));
+            ConsentDialogOptions consentDialogOptions = new ConsentDialogOptions.Builder(context)
+                    .title(title)
+                    .message(message)
+                    .acceptText(acceptText)
+                    .denyText(denyText)
+                    .consentTypes(consentTypes)
+                    .build();
+
+            InLoco.requestPrivacyConsent(consentDialogOptions, new ConsentListener() {
+                @Override
+                public void onConsentResult(final ConsentResult consentResult) {
+                    boolean isWaitingConsent = consentResult.isWaitingConsent();
+                    boolean areAllConsentTypesGiven = consentResult.areAllConsentTypesGiven();
+                    try {
+                        JSONObject data = new JSONObject();
+                        data.put("is_waiting_consent", isWaitingConsent);
+                        data.put("are_all_consent_types_given", areAllConsentTypesGiven);
+                        callback.onSuccess(data);
+                    } catch (JSONException e) {
+                        callback.onFailure(e);
+                    }
+                }
+            });
+        }
+    };
+
+    @Deprecated
     private final Command givePrivacyConsent = new Command("givePrivacyConsent") {
         @Override
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
@@ -89,16 +126,51 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
                 boolean consent = json.optBoolean("consent");
                 InLoco.givePrivacyConsent(context, consent);
             } else {
-                JSONArray arrayJson = json.optJSONArray("consent_types");
-                Set<String> consentTypes =  new HashSet<>();
-                for(int i = 0; i < arrayJson.length(); i++) {
-                    consentTypes.add(arrayJson.optString(i));
-                }
+                Set<String> consentTypes = toHashSet(json.optJSONArray("consent_types"));
                 InLoco.givePrivacyConsent(context, consentTypes);
             }
         }
     };
 
+    private final Command allowConsentTypes = new Command("allowConsentTypes") {
+        @Override
+        public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
+            Set<String> consentTypes = toHashSet(json.optJSONArray("consent_types"));
+            InLoco.allowConsentTypes(context, consentTypes);
+        }
+    };
+
+    private final Command setAllowedConsentTypes = new Command("setAllowedConsentTypes") {
+        @Override
+        public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
+            Set<String> consentTypes = toHashSet(json.optJSONArray("consent_types"));
+            InLoco.setAllowedConsentTypes(context, consentTypes);
+        }
+    };
+
+    private final Command checkConsent = new Command("checkConsent") {
+        @Override
+        public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
+            Set<String> consentTypes = toHashSet(json.optJSONArray("consent_types"));
+            InLoco.checkConsent(context, new ConsentListener() {
+                @Override
+                public void onConsentResult(final ConsentResult consentResult) {
+                    boolean isWaitingConsent = consentResult.isWaitingConsent();
+                    boolean areAllConsentTypesGiven = consentResult.areAllConsentTypesGiven();
+                    try {
+                        JSONObject data = new JSONObject();
+                        data.put("is_waiting_consent", isWaitingConsent);
+                        data.put("are_all_consent_types_given", areAllConsentTypesGiven);
+                        callback.onSuccess(data);
+                    } catch (JSONException e) {
+                        callback.onFailure(e);
+                    }
+                }
+            }, consentTypes);
+        }
+    };
+
+    @Deprecated
     private final Command checkPrivacyConsentMissing = new Command("checkPrivacyConsentMissing") {
         @Override
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
@@ -115,6 +187,14 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
                     }
                 }
             });
+        }
+    };
+
+    private final Command denyConsentTypes = new Command("denyConsentTypes") {
+        @Override
+        public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
+            Set<String> consentTypes = toHashSet(json.optJSONArray("consent_types"));
+            InLoco.denyConsentTypes(context, consentTypes);
         }
     };
 
@@ -154,8 +234,13 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
                                                                                 clearUser,
                                                                                 trackEvent,
                                                                                 registerCheckIn,
+                                                                                requestPrivacyConsent,
                                                                                 givePrivacyConsent,
+                                                                                allowConsentTypes,
+                                                                                setAllowedConsentTypes,
                                                                                 checkPrivacyConsentMissing,
+                                                                                checkConsent,
+                                                                                denyConsentTypes,
                                                                                 setAddress,
                                                                                 clearAddress));
 
@@ -183,8 +268,11 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
                         @Override
                         public void run() {
                             final JSONObject options = inputs.optJSONObject(0);
-
-                            command.execute(getActivity(), options, callback);
+                            try {
+                                command.execute(getActivity(), options, callback);
+                            } catch (Exception e) {
+                                Log.e(TAG, "Failed to call method " + action, e);
+                            }
                         }
                     });
 
@@ -194,17 +282,13 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
             }
 
             if (!commandExecuted) {
-                if (logsEnabled) {
-                    Log.w(TAG, String.format("Invalid action received: %s", action));
-                }
-
+                Log.w(TAG, String.format("Invalid action received: %s", action));
+                
                 PluginResult result = new PluginResult(PluginResult.Status.INVALID_ACTION);
                 callbackContext.sendPluginResult(result);
             }
         } catch (Throwable t) {
-            if (logsEnabled) {
-                Log.e(TAG, "Action execution has failed: " + action, t);
-            }
+            Log.e(TAG, "Action execution has failed: " + action, t);
         }
 
         return true;
@@ -216,9 +300,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
         try {
             hashMap = toHashMap(new JSONObject(jsonString));
         } catch (JSONException e) {
-            if (logsEnabled) {
-                Log.w(TAG, "Failed to parse data", e);
-            }
+            Log.w(TAG, "Failed to parse data", e);
         }
 
         return hashMap;
@@ -233,12 +315,22 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
                 hashMap.put(key, jsonObject.getString(key));
             }
         } catch (JSONException e) {
-            if (logsEnabled) {
-                Log.w(TAG, "Failed to parse data", e);
-            }
+            Log.w(TAG, "Failed to parse data", e);
         }
 
         return hashMap;
+    }
+
+    private Set<String> toHashSet(JSONArray jsonArray) {
+        Set<String> set =  new HashSet<>();
+        if (jsonArray == null) {
+            return set;
+        }
+        
+        for(int i = 0; i < jsonArray.length(); i++) {
+            set.add(jsonArray.optString(i));
+        }
+        return set;
     }
 
     private int getDrawableId(Context context, String icon) {
