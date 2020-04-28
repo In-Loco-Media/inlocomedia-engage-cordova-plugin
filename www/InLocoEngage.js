@@ -5,41 +5,41 @@ var inLocoEngageExport = {};
 
 inLocoEngageExport.OPTIONS = {
   // setUser options
-  USER_ID: 'user_id',
+  USER_ID: 'userId',
 
   // trackEvent options
   EVENT_NAME: 'name',
   EVENT_PROPERTIES: 'properties',
 
   // checkIn options
-  PLACE_NAME: 'place_name',
-  PLACE_ID: 'place_id',
+  PLACE_NAME: 'placeName',
+  PLACE_ID: 'placeId',
   EXTRAS: 'extras',
 
   // addressValidation options
   LANGUAGE: 'language',
   COUNTRY: 'country',
-  COUNTRY_NAME: 'country_name',
-  COUNTRY_CODE: 'country_code',
-  ADMIN_AREA: 'admin_area',
-  SUB_ADMIN_AREA: 'sub_admin_area',
+  COUNTRY_NAME: 'countryName',
+  COUNTRY_CODE: 'countryCode',
+  ADMIN_AREA: 'adminArea',
+  SUB_ADMIN_AREA: 'subAdminArea',
   LOCALITY: 'locality',
-  SUB_LOCALITY: 'sub_locality',
+  SUB_LOCALITY: 'subLocality',
   THOROUGHFARE: 'thoroughfare',
-  SUB_THOROUGHFARE: 'sub_thoroughfare',
-  POSTAL_CODE: 'postal_code',
+  SUB_THOROUGHFARE: 'subThoroughfare',
+  POSTAL_CODE: 'postalCode',
   LATITUDE: 'latitude',
   LONGITUDE: 'longitude',
 
   // givePrivacyConsent options
   CONSENT: 'consent',
-  CONSENT_TYPES: 'consent_types',
+  CONSENT_TYPES: 'consentTypes',
 
   // consent dialog options
-  CONSENT_DIALOG_TITLE: 'consent_dialog_title',
-  CONSENT_DIALOG_MESSAGE: 'consent_dialog_message',
-  CONSENT_DIALOG_ACCEPT_TEXT: 'consent_dialog_accept_text',
-  CONSENT_DIALOG_DENY_TEXT: 'consent_dialog_deny_text',
+  CONSENT_DIALOG_TITLE: 'consentDialogTitle',
+  CONSENT_DIALOG_MESSAGE: 'consentDialogMessage',
+  CONSENT_DIALOG_ACCEPT_TEXT: 'consentDialogAcceptText',
+  CONSENT_DIALOG_DENY_TEXT: 'consentDialogDenyText',
   //CONSENT_TYPES: 'consent_types',
 
   // consentTypes options
