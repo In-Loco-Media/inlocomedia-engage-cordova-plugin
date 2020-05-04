@@ -45,6 +45,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
             String userId = json.optString("userId");
 
             InLoco.setUserId(context, userId);
+            callback.onSucess();
         }
     };
 
@@ -52,6 +53,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
         @Override
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
             InLoco.clearUserId(context);
+            callback.onSucess();
         }
     };
 
@@ -63,6 +65,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
             HashMap<String, String> properties = toHashMap(json.optJSONObject("properties"));
 
             InLocoEvents.trackEvent(context, name, properties);
+            callback.onSucess();
         }
     };
 
@@ -80,6 +83,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
                     .build();
 
             InLocoVisits.registerCheckIn(context, checkIn);
+            callback.onSucess();
         }
     };
 
@@ -87,10 +91,10 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
     private final Command requestPrivacyConsent = new Command("requestPrivacyConsent") {
         @Override
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
-            String title = json.optString("consentDialogTitle", "Sample Title");
-            String message = json.optString("consentDialogMessage", "Sample Message");
-            String acceptText = json.optString("consentDialogAcceptText", "Sample Accept");
-            String denyText = json.optString("consentDialogDenyText", "Sample Deny");
+            String title = json.optString("consentDialogTitle");
+            String message = json.optString("consentDialogMessage");
+            String acceptText = json.optString("consentDialogAcceptText");
+            String denyText = json.optString("consentDialogDenyText");
             Set<String> consentTypes = toHashSet(json.optJSONArray("consentTypes"));
             ConsentDialogOptions consentDialogOptions = new ConsentDialogOptions.Builder(context)
                     .title(title)
@@ -133,6 +137,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
                 Set<String> consentTypes = toHashSet(json.optJSONArray("consentTypes"));
                 InLoco.givePrivacyConsent(context, consentTypes);
             }
+            callback.onSucess();
         }
     };
 
@@ -141,6 +146,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
             Set<String> consentTypes = toHashSet(json.optJSONArray("consentTypes"));
             InLoco.allowConsentTypes(context, consentTypes);
+            callback.onSucess();
         }
     };
 
@@ -149,6 +155,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
             Set<String> consentTypes = toHashSet(json.optJSONArray("consentTypes"));
             InLoco.setAllowedConsentTypes(context, consentTypes);
+            callback.onSucess();
         }
     };
 
@@ -203,6 +210,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
             Set<String> consentTypes = toHashSet(json.optJSONArray("consentTypes"));
             InLoco.denyConsentTypes(context, consentTypes);
+            callback.onSucess();
         }
     };
 
@@ -228,6 +236,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
             address.setLongitude(json.optDouble("longitude"));
 
             InLocoAddressValidation.setAddress(context, address);
+            callback.onSucess();
         }
     };
 
@@ -235,6 +244,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
         @Override
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
             InLocoAddressValidation.clearAddress(context);
+            callback.onSucess();
         }
     };
 
@@ -256,6 +266,12 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
     public boolean execute(final String action, final JSONArray inputs, final CallbackContext callbackContext) {
         try {
             final EngageCallback callback = new EngageCallback() {
+                @Override
+                public void onSucess() {
+                    PluginResult result = new PluginResult(PluginResult.Status.OK);
+                    callbackContext.sendPluginResult(result);
+                }
+
                 @Override
                 public void onSuccess(final JSONObject data) {
                     PluginResult result = new PluginResult(PluginResult.Status.OK, data);
@@ -280,6 +296,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
                                 command.execute(getActivity(), options, callback);
                             } catch (Exception e) {
                                 Log.e(TAG, "Failed to call method " + action, e);
+                                callback.onFailure(e);
                             }
                         }
                     });
@@ -315,6 +332,10 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
     }
 
     private HashMap<String, String> toHashMap(final JSONObject jsonObject) {
+        if (jsonObject == null){
+            return null;
+        }
+
         HashMap<String, String> hashMap = new HashMap<String, String>();
 
         try {
@@ -371,6 +392,8 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
     }
 
     interface EngageCallback {
+
+        void onSucess();
 
         void onSuccess(@NonNull final JSONObject data);
 
