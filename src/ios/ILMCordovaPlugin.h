@@ -8,6 +8,7 @@
 - (void)setUser:(CDVInvokedUrlCommand *)command;
 - (void)clearUser:(CDVInvokedUrlCommand *)command;
 - (void)trackEvent:(CDVInvokedUrlCommand *)command;
+- (void)trackLocalizedEvent:(CDVInvokedUrlCommand *)command;
 - (void)registerCheckIn:(CDVInvokedUrlCommand *)command;
 - (void)setAddress:(CDVInvokedUrlCommand *)command;
 - (void)clearAddress:(CDVInvokedUrlCommand *)command;
