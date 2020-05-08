@@ -7,6 +7,7 @@
 
 - (void)setUser:(CDVInvokedUrlCommand *)command;
 - (void)clearUser:(CDVInvokedUrlCommand *)command;
+- (void)getInstallationId:(CDVInvokedUrlCommand *)command;
 - (void)trackEvent:(CDVInvokedUrlCommand *)command;
 - (void)trackLocalizedEvent:(CDVInvokedUrlCommand *)command;
 - (void)registerCheckIn:(CDVInvokedUrlCommand *)command;
@@ -19,6 +20,5 @@
 - (void)setAllowedConsentTypes:(CDVInvokedUrlCommand *)command;
 - (void)allowConsentTypes:(CDVInvokedUrlCommand *)command;
 - (void)denyConsentTypes:(CDVInvokedUrlCommand *)command;
-
 
 @end

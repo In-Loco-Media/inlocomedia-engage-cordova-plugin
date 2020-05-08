@@ -3,10 +3,12 @@ Release 3.0.0 (28/04/2020)
 
 ### Features
 - Adds iOS platform
-- Updates In Loco Engage SDK version to 5.1.+
+- Updates In Loco Engage SDK version to 5.2.+
 - Modifies the plugin interface, simplifying integration
     - SDK Options setting on files
 - Adds granular privacy consent functionality
+- Adds checkIn registration functionality
+- Adds method to get the InstallationId
 
 Release 2.1.0 (24/01/2019)
 ===
