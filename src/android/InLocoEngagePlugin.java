@@ -226,13 +226,17 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
             InLoco.checkPrivacyConsentMissing(context, new InLocoListener<Boolean>() {
                 @Override
                 public void onResult(final Result<Boolean> result) {
-                    boolean isConsentMissing = result.getResult();
-                    try {
-                        JSONObject data = new JSONObject();
-                        data.put("isConsentMissing", isConsentMissing);
-                        callback.onSuccess(data);
-                    } catch (JSONException e) {
-                        callback.onFailure(e);
+                    if (result.isSuccessful()) {
+                        boolean isConsentMissing = result.getResult();
+                        try {
+                            JSONObject data = new JSONObject();
+                            data.put("isConsentMissing", isConsentMissing);
+                            callback.onSuccess(data);
+                        } catch (JSONException e) {
+                            callback.onFailure(e);
+                        }
+                    } else {
+                        callback.onFailure(new Exception("Error while checking if privacy consent is missing."));
                     }
                 }
             });
