@@ -72,6 +72,8 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
                         } catch (JSONException e) {
                             callback.onFailure(e);
                         }
+                    } else {
+                        callback.onFailure(new Exception("Error while getting installation id."));
                     }
                 }
             });

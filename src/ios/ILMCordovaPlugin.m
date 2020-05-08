@@ -29,8 +29,6 @@
 - (void)getInstallationId:(CDVInvokedUrlCommand *)command
 {
     [ILMInLoco getInstallationId:^(NSString *installationId) {
-        NSLog(@"Installation Id: %@", installationId);
-
         NSDictionary *data = [NSDictionary dictionaryWithObject:installationId forKey:@"installationId"];
 
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK 
@@ -171,8 +169,6 @@
 - (void)checkPrivacyConsentMissing:(CDVInvokedUrlCommand *)command
 {
     [ILMInLoco checkPrivacyConsentMissing:^(BOOL consentMissing) {
-        NSLog(@"Consent missing: %@", @(consentMissing));
-
         NSDictionary *data = [NSDictionary dictionaryWithObject:@(consentMissing) forKey:@"isConsentMissing"];
 
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK 
