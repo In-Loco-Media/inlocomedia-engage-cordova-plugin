@@ -57,6 +57,27 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
         }
     };
 
+    private final Command getInstallationId = new Command("getInstallationId") {
+        @Override
+        public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
+            InLoco.getInstallationId(context, new InLocoListener<String>() {
+                @Override
+                public void onResult(final Result<String> result) {
+                    if (result.isSuccessful()) {
+                        try {
+                            String installationId = result.getResult();
+                            JSONObject data = new JSONObject();
+                            data.put("installationId", installationId);
+                            callback.onSuccess(data);
+                        } catch (JSONException e) {
+                            callback.onFailure(e);
+                        }
+                    }
+                }
+            });
+        }
+    };
+
     // Custom Event
     private final Command trackEvent = new Command("trackEvent") {
         @Override
@@ -218,9 +239,8 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
     private final Command setAddress = new Command("setAddress") {
         @Override
         public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
-            String language = json.optString("language");
-            String country = json.optString("country");
-            Locale locale = new Locale(language, country);
+ 
+            Locale locale = localeFromString(json.optString("locale"));
 
             Address address = new Address(locale);
             address.setCountryName(json.optString("countryName"));
@@ -250,6 +270,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
 
     private final List<Command> commands = new ArrayList<Command>(Arrays.asList(setUser,
                                                                                 clearUser,
+                                                                                getInstallationId,
                                                                                 trackEvent,
                                                                                 registerCheckIn,
                                                                                 requestPrivacyConsent,
@@ -360,6 +381,20 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
             set.add(jsonArray.optString(i));
         }
         return set;
+    }
+
+    private Locale localeFromString(String locale) {
+        try {
+            String parsedLocale = locale.replaceAll("_", "-");
+            String[] parts = parsedLocale.split("-", -1);
+            if (parts.length == 1) return new Locale(parts[0]);
+            else if (parts.length == 2
+                     || (parts.length == 3 && parts[2].startsWith("#")))
+                return new Locale(parts[0], parts[1]);
+            else return new Locale(parts[0], parts[1], parts[2]);
+        } catch (Throwable t) {
+            return null;
+        }
     }
 
     private int getDrawableId(Context context, String icon) {

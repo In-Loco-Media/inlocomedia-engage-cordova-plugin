@@ -15,6 +15,7 @@ inLocoEngageExport.OPTIONS = {
   PLACE_NAME: 'placeName',
   PLACE_ID: 'placeId',
   EXTRAS: 'extras',
+  ADDRESS: 'address',
 
   // addressValidation options
   LANGUAGE: 'language',
@@ -56,6 +57,7 @@ inLocoEngageExport.OPTIONS = {
 inLocoEngageExport.ACTIONS = {
   SET_USER: 'setUser',
   CLEAR_USER: 'clearUser',
+  GET_INSTALLATION_ID: 'getInstallationId',
   TRACK_EVENT: 'trackEvent',
   REGISTER_CHECK_IN: 'registerCheckIn',
   SET_ADDRESS: 'setAddress',
@@ -76,6 +78,10 @@ inLocoEngageExport.setUser = function(args, successCallback, failureCallback) {
 inLocoEngageExport.clearUser = function(successCallback, failureCallback) {
   cordova.exec(successCallback, failureCallback, 'InLocoEngage', inLocoEngageExport.ACTIONS.CLEAR_USER, []);
 }
+
+inLocoEngageExport.getInstallationId = function(successCallback, failureCallback) {
+  cordova.exec(successCallback, failureCallback, 'InLocoEngage', inLocoEngageExport.ACTIONS.GET_INSTALLATION_ID, []);
+};
 
 inLocoEngageExport.trackEvent = function(args, successCallback, failureCallback) {
   cordova.exec(successCallback, failureCallback, 'InLocoEngage', inLocoEngageExport.ACTIONS.TRACK_EVENT, [args]);
