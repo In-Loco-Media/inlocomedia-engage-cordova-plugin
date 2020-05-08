@@ -15,8 +15,8 @@ Latest Updates
 ===
 Check our [changelog]
 
-[signup]: http://docs.inlocomedia.com/docs/sign-up
+[signup]: http://dash.inloco.ai
 [changelog]: https://github.com/In-Loco-Media/inlocoengage-cordova-plugin/blob/master/CHANGELOG.md
-[website]: http://www.inlocoengage.com/
+[website]: http://www.inloco.com.br/
 [logo]: https://s3.amazonaws.com/mobile-api/Cordova/v1/Documentation/InLocoEngage+Logo.png
 [documentation]: https://docs.inlocoengage.com/v1.0/docs/getting-started-with-cordova
