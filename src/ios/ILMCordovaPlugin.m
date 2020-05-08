@@ -56,6 +56,22 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
+- (void)trackLocalizedEvent:(CDVInvokedUrlCommand *)command
+{
+    NSDictionary *params = [[command arguments] objectAtIndex:0];
+    NSString *eventName = params[@"name"];
+    NSDictionary *givenProperties = params[@"properties"];
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
+
+    for (NSString* key in givenProperties) {
+        [properties setObject:[NSString stringWithFormat:@"%@", [givenProperties valueForKey:key]] forKey:key];
+    }
+
+    [ILMInLocoVisits trackLocalizedEvent:eventName properties:properties];
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus: CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
 - (void)registerCheckIn:(CDVInvokedUrlCommand *)command
 {
     NSDictionary *params = [[command arguments] objectAtIndex:0];

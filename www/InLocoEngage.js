@@ -41,7 +41,7 @@ inLocoEngageExport.OPTIONS = {
   CONSENT_DIALOG_MESSAGE: 'consentDialogMessage',
   CONSENT_DIALOG_ACCEPT_TEXT: 'consentDialogAcceptText',
   CONSENT_DIALOG_DENY_TEXT: 'consentDialogDenyText',
-  //CONSENT_TYPES: 'consent_types',
+  //CONSENT_TYPES: 'consentTypes',
 
   // consentTypes options
   ADDRESS_VALIDATION: "address_validation",
@@ -59,6 +59,7 @@ inLocoEngageExport.ACTIONS = {
   CLEAR_USER: 'clearUser',
   GET_INSTALLATION_ID: 'getInstallationId',
   TRACK_EVENT: 'trackEvent',
+  TRACK_LOCALIZED_EVENT: 'trackLocalizedEvent',
   REGISTER_CHECK_IN: 'registerCheckIn',
   SET_ADDRESS: 'setAddress',
   CLEAR_ADDRESS: 'clearAddress',
@@ -85,6 +86,10 @@ inLocoEngageExport.getInstallationId = function(successCallback, failureCallback
 
 inLocoEngageExport.trackEvent = function(args, successCallback, failureCallback) {
   cordova.exec(successCallback, failureCallback, 'InLocoEngage', inLocoEngageExport.ACTIONS.TRACK_EVENT, [args]);
+};
+
+inLocoEngageExport.trackLocalizedEvent = function(args, successCallback, failureCallback) {
+  cordova.exec(successCallback, failureCallback, 'InLocoEngage', inLocoEngageExport.ACTIONS.TRACK_LOCALIZED_EVENT, [args]);
 };
 
 inLocoEngageExport.registerCheckIn = function(args, successCallback, failureCallback) {

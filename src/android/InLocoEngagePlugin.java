@@ -90,6 +90,17 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
         }
     };
 
+    private final Command trackLocalizedEvent = new Command("trackLocalizedEvent") {
+        @Override
+        public void execute(final Activity context, final JSONObject json, final EngageCallback callback) {
+            String name = json.optString("name");
+            HashMap<String, String> properties = toHashMap(json.optJSONObject("properties"));
+
+            InLocoVisits.trackLocalizedEvent(context, name, properties);
+            callback.onSucess();
+        }
+    };
+
     // Check In
     private final Command registerCheckIn = new Command("registerCheckIn") {
         @Override
@@ -272,6 +283,7 @@ public final class InLocoEngagePlugin extends CordovaPlugin {
                                                                                 clearUser,
                                                                                 getInstallationId,
                                                                                 trackEvent,
+                                                                                trackLocalizedEvent,
                                                                                 registerCheckIn,
                                                                                 requestPrivacyConsent,
                                                                                 givePrivacyConsent,
